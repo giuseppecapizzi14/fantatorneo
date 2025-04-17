@@ -21,20 +21,33 @@ api.interceptors.request.use(
     if (token) {
       config.headers['x-auth-token'] = token;
     }
+    console.log('API Request:', config.url, config);
     return config;
   },
   error => {
+    console.error('API Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor to log responses and errors
+api.interceptors.response.use(
+  response => {
+    console.log('API Response:', response.config.url, response);
+    return response;
+  },
+  error => {
+    console.error('API Response Error:', error.config?.url, error);
     return Promise.reject(error);
   }
 );
 
 // Auth services
-// Make sure your login function is properly implemented
-// Fix the login function to use the api instance with the correct URL
-// Fix the login function to use the correct endpoint
 export const login = async (username, password) => {
   try {
+    console.log('Attempting login with:', { username, url: API_URL });
     const response = await api.post('/auth/login', { username, password });
+    console.log('Login response:', response);
     return response;
   } catch (error) {
     console.error('API login error:', error);

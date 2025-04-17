@@ -11,8 +11,10 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-url.netlify.app', 'https://your-frontend-url.vercel.app'] 
-    : 'http://localhost:3000'
+    ? ['https://fantamazzarinosummercup.netlify.app'] 
+    : 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'x-auth-token']
 }));
 app.use(express.json());
 
