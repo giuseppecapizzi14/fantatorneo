@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // Make sure this matches your server port (5001 if that's what your server is using)
 // Export API_URL so it can be imported elsewhere
-export const API_URL = 'http://localhost:5001/api';
+export const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-backend-url.herokuapp.com/api' 
+  : 'http://localhost:5001/api';
 
 // Create axios instance
 const api = axios.create({
