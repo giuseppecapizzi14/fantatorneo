@@ -1,0 +1,9 @@
+{
+  "jwtSecret": "yourJwtSecretKey",
+  "dbConfig": {
+    "host": "localhost",
+    "user": "postgres",
+    "password": "GiuseppeCapizzi_14!",
+    "database": "fantacalcio"
+  }
+}

@@ -1,0 +1,43 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  username VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL DEFAULT 'user'
+);
+
+CREATE TABLE players (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  position VARCHAR(50) NOT NULL,
+  price INTEGER NOT NULL,
+  total_points INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE teams (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  total_points INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE team_players (
+  id SERIAL PRIMARY KEY,
+  team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
+  player_id INTEGER REFERENCES players(id) ON DELETE CASCADE,
+  is_goalkeeper BOOLEAN NOT NULL DEFAULT false
+);
+
+CREATE TABLE matchdays (
+  id SERIAL PRIMARY KEY,
+  number INTEGER UNIQUE NOT NULL,
+  name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE player_bonuses (
+  id SERIAL PRIMARY KEY,
+  player_id INTEGER REFERENCES players(id) ON DELETE CASCADE,
+  matchday_id INTEGER REFERENCES matchdays(id) ON DELETE CASCADE,
+  points INTEGER NOT NULL DEFAULT 0,
+  UNIQUE(player_id, matchday_id)
+);
