@@ -224,12 +224,14 @@ const AdminBonus = () => {
       {success && <Alert variant="success">{success}</Alert>}
       
       <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-4">
-          <Form.Label>Seleziona Giornata</Form.Label>
+        <Form.Group className="mb-4 text-center">
+          <Form.Label style={{ fontSize: '0.9rem' }}>Seleziona Giornata</Form.Label>
           <Form.Select 
             value={selectedMatchday || ''} 
             onChange={handleMatchdayChange}
             required
+            className="mx-auto"
+            style={{ maxWidth: '300px' }}
           >
             <option value="">Seleziona una giornata</option>
             {matchdays.map(matchday => (
@@ -244,11 +246,13 @@ const AdminBonus = () => {
           <>
             <h4>Bonus Giocatori</h4>
             
-            <Form.Group className="mb-3">
-              <Form.Label>Filtra per squadra</Form.Label>
+            <Form.Group className="mb-3 text-center">
+              <Form.Label style={{ fontSize: '0.9rem' }}>Filtra per squadra</Form.Label>
               <Form.Select 
                 value={squadFilter} 
                 onChange={handleSquadFilterChange}
+                className="mx-auto"
+                style={{ maxWidth: '300px' }}
               >
                 <option value="all">Tutte le squadre</option>
                 {squads.map(squad => (
@@ -262,15 +266,14 @@ const AdminBonus = () => {
             <ListGroup className="mb-4">
               {filteredPlayers.map(player => (
                 <ListGroup.Item key={player.id} className="d-flex justify-content-between align-items-center">
-                  <div>
-                    {player.name} 
-                    <Badge bg={player.position === 'Portiere' || player.is_goalkeeper ? 'warning' : 'info'} className="ms-2">
-                      {player.position || (player.is_goalkeeper ? 'Portiere' : 'Giocatore di movimento')}
-                    </Badge>
+                  <div className="text-start" style={{ minWidth: '150px' }}>
+                    <div>{player.name}</div>
                     {player.squad && (
-                      <Badge bg="secondary" className="ms-2">
-                        {player.squad}
-                      </Badge>
+                      <div>
+                        <Badge bg="secondary" className="mt-1">
+                          {player.squad}
+                        </Badge>
+                      </div>
                     )}
                   </div>
                   <div className="d-flex align-items-center">

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import './responsive.css';
+import './global.css'; // Import the global CSS with background and text shadows
 
 // Components
 import Navbar from './components/layout/Navbar';
