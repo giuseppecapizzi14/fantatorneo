@@ -24,43 +24,20 @@ const Login = ({ setIsAuthenticated, setUser }) => {
   // Remove the line that's trying to log API_URL
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setError('');
     
     try {
-      console.log('Attempting login with username:', username);
-      // Remove this line that's causing the error
-      // console.log('API URL:', `${API_URL}/auth/login`);
       const response = await login(username, password);
-      console.log('Login response:', response);
-      
-      // Set authentication state
+      localStorage.setItem('token', response.data.token);
       setIsAuthenticated(true);
       setUser(response.data.user);
       
-      // Store token in localStorage
-      localStorage.setItem('token', response.data.token);
-      
-      // Redirect based on role
-      if (response.data.user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/dashboard');
-      }
+      // Reindirizza sempre alla dashboard, indipendentemente dal ruolo
+      navigate('/dashboard');
     } catch (err) {
-      console.error('Login error details:', err);
-      // Log more detailed error information
-      if (err.response) {
-        console.error('Error response:', err.response);
-        console.error('Error status:', err.response.status);
-        console.error('Error data:', err.response.data);
-      }
-      
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError('Errore durante il login. Riprova più tardi.');
-      }
+      setError('Username o password non validi');
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }

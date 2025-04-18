@@ -17,7 +17,8 @@ import Dashboard from './pages/Dashboard';
 import TeamCreate from './pages/teamcreate';
 import TeamsList from './pages/TeamsList';
 import Leaderboard from './pages/Leaderboard';
-import AdminPanel from './pages/admin/AdminPanel';
+// Rimuovi l'import di AdminPanel
+// import AdminPanel from './pages/admin/AdminPanel';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminTeams from './pages/admin/AdminTeams';
 import AdminPlayers from './pages/admin/AdminPlayers';
@@ -27,6 +28,13 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Funzione per gestire il logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setUser(null);
+  };
 
   useEffect(() => {
     // Check if user is logged in
@@ -65,6 +73,18 @@ function App() {
     };
 
     checkAuth();
+
+    // Aggiungi event listener per il logout automatico quando l'utente chiude la pagina
+    const handleBeforeUnload = () => {
+      handleLogout();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Cleanup dell'event listener quando il componente viene smontato
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   // Protected route component
@@ -118,12 +138,7 @@ function App() {
               </ProtectedRoute>
             } />
             
-            {/* Admin routes */}
-            <Route path="/admin" element={
-              <ProtectedRoute adminOnly={true}>
-                <AdminPanel />
-              </ProtectedRoute>
-            } />
+            {/* Admin routes - rimuovi la rotta /admin e mantieni solo le rotte specifiche */}
             <Route path="/admin/users" element={
               <ProtectedRoute adminOnly={true}>
                 <AdminUsers />

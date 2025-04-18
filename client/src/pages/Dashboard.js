@@ -94,12 +94,6 @@ const Dashboard = ({ user }) => {
             <Card.Header as="h5">Azioni rapide</Card.Header>
             <Card.Body>
               <div className="d-grid gap-2">
-                {user.role === 'admin' && (
-                  <Link to="/admin">
-                    <Button variant="danger" className="w-100 mb-2">Pannello Admin</Button>
-                  </Link>
-                )}
-                
                 <Link to="/leaderboard">
                   <Button variant="success" className="w-100 mb-2">Classifica</Button>
                 </Link>

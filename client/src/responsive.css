@@ -1,8 +1,8 @@
 /* Regole responsive globali */
 @media (max-width: 768px) {
   .container {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
     max-width: 95%;
     margin: 0 auto;
   }

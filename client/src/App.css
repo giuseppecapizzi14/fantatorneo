@@ -67,3 +67,66 @@
     margin-bottom: 15px;
   }
 }
+
+
+/* Stili per rendere trasparente il dropdown menu */
+/* Stili per rendere il dropdown menu integrato con la navbar */
+.transparent-dropdown .dropdown-menu {
+  background-color: #212529 !important; /* Stesso colore della navbar dark */
+  border: none !important;
+  border-radius: 0 0 8px 8px !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  animation: fadeIn 0.2s ease-in-out;
+  text-align: center;
+}
+
+.transparent-dropdown .dropdown-item {
+  color: rgba(255, 255, 255, 0.85) !important;
+  background-color: transparent !important;
+  padding: 10px 20px !important;
+  text-align: center;
+}
+
+.transparent-dropdown .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+/* Animazione per il dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animazione per la chiusura del dropdown */
+.dropdown-menu.show {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-menu {
+  animation: fadeOut 0.2s ease-in-out;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Stile per il toggle del dropdown */
+.transparent-dropdown .dropdown-toggle {
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
