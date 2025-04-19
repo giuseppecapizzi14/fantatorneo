@@ -1,0 +1,141 @@
+/* Stili globali ispirati al progetto fantacalcio */
+
+/* Colori principali */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+}
+
+/* Stili generali */
+body {
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  line-height: 1.6;
+}
+
+/* Card styling - remove or reduce box-shadow */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: none; /* Remove box shadow completely */
+  transition: transform 0.2s;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Keep shadow only on hover for interaction feedback */
+}
+
+/* Container styling - remove box-shadow */
+.container, .container-fluid {
+  box-shadow: none;
+}
+
+/* List group styling - remove box-shadow */
+.list-group {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+/* Table styling - remove box-shadow */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+/* Alert styling - remove box-shadow */
+.alert {
+  border-radius: 8px;
+  border: none;
+  box-shadow: none;
+}
+
+/* Badge styling */
+.badge {
+  padding: 6px 10px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+/* Navbar styling */
+.navbar {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* List group styling */
+.list-group {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  padding: 12px 15px;
+  transition: background-color 0.2s;
+}
+
+.list-group-item:first-child {
+  border-top: none;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+
+/* Aggiungiamo stili responsive per migliorare la visualizzazione mobile */
+@media (max-width: 768px) {
+  .container, .container-fluid {
+    max-width: 98%; /* Questo è il parametro principale da modificare per la larghezza */
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .row {
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  
+  .col, [class*="col-"] {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .card {
+    margin-bottom: 12px;
+  }
+  
+  .card-body {
+    padding: 15px;
+  }
+  
+  /* Ridurre il padding per elementi interni */
+  .list-group-item {
+    padding: 10px 12px;
+  }
+}
+
+/* Ottimizzazione per schermi molto piccoli */
+@media (max-width: 576px) {
+  .container, .container-fluid {
+    max-width: 99%; /* Aumentiamo ulteriormente la larghezza per schermi molto piccoli */
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}

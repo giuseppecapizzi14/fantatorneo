@@ -34,7 +34,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
       setUser(response.data.user);
       
       // Reindirizza sempre alla dashboard, indipendentemente dal ruolo
-      navigate('/dashboard');
+      navigate('/home');
     } catch (err) {
       setError('Username o password non validi');
       console.error('Login error:', err);

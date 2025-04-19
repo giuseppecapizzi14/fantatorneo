@@ -71,21 +71,58 @@
 
 /* Stili per rendere trasparente il dropdown menu */
 /* Stili per rendere il dropdown menu integrato con la navbar */
+/* Integrated dropdown styling - match exactly with navbar */
 .transparent-dropdown .dropdown-menu {
-  background-color: #212529 !important; /* Stesso colore della navbar dark */
+  background-color: rgba(33, 37, 41, 0.4) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
   border: none !important;
   border-radius: 0 0 8px 8px !important;
   margin-top: 0 !important;
   padding: 0 !important;
   animation: fadeIn 0.2s ease-in-out;
-  text-align: center;
+  box-shadow: none !important;
 }
 
+/* Ensure dropdown items have transparent background */
 .transparent-dropdown .dropdown-item {
   color: rgba(255, 255, 255, 0.85) !important;
   background-color: transparent !important;
   padding: 10px 20px !important;
-  text-align: center;
+  transition: all 0.2s ease;
+}
+
+/* Ensure hover state maintains transparency */
+.transparent-dropdown .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgb(255, 208, 0) !important;
+  transform: translateX(5px);
+}
+
+/* Animation for dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Style for dropdown toggle */
+.transparent-dropdown .dropdown-toggle {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.transparent-dropdown .dropdown-toggle:hover {
+  color: rgb(255, 208, 0) !important;
+}
+
+/* Remove dropdown arrow */
+.transparent-dropdown .dropdown-toggle::after {
+  display: none !important;
 }
 
 .transparent-dropdown .dropdown-item:hover {
@@ -129,4 +166,107 @@
 .transparent-dropdown .dropdown-toggle {
   padding-left: 15px !important;
   padding-right: 15px !important;
+}
+
+
+/* Custom Navbar Toggler Styling */
+.custom-toggler .navbar-toggler-icon {
+  background-image: none !important;
+  position: relative;
+}
+
+.custom-toggler .navbar-toggler-icon::before,
+.custom-toggler .navbar-toggler-icon::after,
+.custom-toggler .navbar-toggler-icon {
+  width: 24px;
+  height: 2px;
+  background-color: rgb(255, 208, 0) !important;
+  display: block;
+  transition-property: transform;
+  transition-duration: 0.3s;
+}
+
+.custom-toggler .navbar-toggler-icon::before,
+.custom-toggler .navbar-toggler-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.custom-toggler .navbar-toggler-icon::before {
+  top: -8px;
+}
+
+.custom-toggler .navbar-toggler-icon::after {
+  top: 8px;
+}
+
+/* Animation for the toggler */
+.custom-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  transform: rotate(45deg);
+  background-color: transparent !important;
+}
+
+.custom-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+  transform: rotate(90deg);
+  top: 0;
+}
+
+.custom-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+  transform: rotate(0);
+  top: 0;
+}
+
+/* Remove border and outline */
+.custom-toggler {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.custom-toggler:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Admin Panel Styling */
+.admin-card {
+  transition: all 0.3s ease;
+  background-color: rgba(33, 37, 41, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: none;
+  color: white;
+}
+
+.admin-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-card .icon-container {
+  background-color: rgba(255, 208, 0, 0.1);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.admin-card:hover .icon-container {
+  background-color: rgba(255, 208, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.admin-card .card-title {
+  color: rgb(255, 208, 0);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.admin-card .card-text {
+  color: rgba(255, 255, 255, 0.7);
 }

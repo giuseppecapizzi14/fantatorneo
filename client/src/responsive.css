@@ -1,8 +1,8 @@
 /* Regole responsive globali */
 @media (max-width: 768px) {
   .container {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
     max-width: 95%;
     margin: 0 auto;
   }
@@ -11,31 +11,53 @@
     font-size: 0.9rem;
     width: 95%;
     margin: 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
   }
   
   .card {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
     width: 95%;
     margin-left: auto;
     margin-right: auto;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
   
   .btn {
-    padding: 0.375rem 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
   
   h1 {
     font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
   }
   
   h2 {
     font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
   }
   
   /* Aggiunta di bordi più ampi per i contenitori */
   .container, .card, .list-group {
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   }
   
   /* Stringere le tabelle e le liste */
@@ -43,6 +65,23 @@
     width: 95%;
     margin-left: auto;
     margin-right: auto;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 12px 15px;
+    transition: background-color 0.2s;
+  }
+  
+  .list-group-item:first-child {
+    border-top: none;
+  }
+  
+  .list-group-item:last-child {
+    border-bottom: none;
   }
   
   /* Migliorare la spaziatura nelle righe */
@@ -61,6 +100,22 @@
     max-width: 95%;
     margin-left: auto;
     margin-right: auto;
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  /* Badge styling */
+  .badge {
+    padding: 6px 10px;
+    font-weight: 500;
+    border-radius: 6px;
   }
 }
 
@@ -78,14 +133,18 @@
   
   .card-title {
     font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
   }
   
   .btn {
     font-size: 0.9rem;
+    padding: 0.35rem 0.65rem;
   }
   
   .navbar-brand {
     font-size: 1.2rem;
+    font-weight: 600;
   }
   
   /* Stringere ulteriormente le tabelle e le liste */
@@ -95,8 +154,15 @@
   
   /* Aumentare i bordi per schermi molto piccoli */
   main.container {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  
+  /* Migliorare la visualizzazione delle alert */
+  .alert {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
   }
 }
 
@@ -114,11 +180,24 @@
   }
   
   .btn-group .btn {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
   
   /* Stringere ulteriormente le tabelle e le liste */
   .table, .list-group {
     width: 90%;
+  }
+  
+  /* Ridurre ulteriormente il padding */
+  .card-body {
+    padding: 12px;
+  }
+  
+  /* Remove box-shadow from mobile containers */
+  @media (max-width: 768px) {
+    .container, .card, .list-group {
+      border-radius: 8px;
+      box-shadow: none;
+    }
   }
 }

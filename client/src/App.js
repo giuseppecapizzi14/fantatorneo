@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './responsive.css';
+import './theme.css'; // Importa il nuovo file di stile
 import './global.css'; // Import the global CSS with background and text shadows
 
 // Components
@@ -17,12 +18,12 @@ import Dashboard from './pages/Dashboard';
 import TeamCreate from './pages/teamcreate';
 import TeamsList from './pages/TeamsList';
 import Leaderboard from './pages/Leaderboard';
-// Rimuovi l'import di AdminPanel
-// import AdminPanel from './pages/admin/AdminPanel';
+import AdminPanel from './pages/AdminPanel';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminTeams from './pages/admin/AdminTeams';
 import AdminPlayers from './pages/admin/AdminPlayers';
 import AdminBonus from './pages/admin/AdminBonus';
+import Landing from './pages/Landing';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,6 +37,7 @@ function App() {
     setUser(null);
   };
 
+  // In the useEffect hook where you check authentication
   useEffect(() => {
     // Check if user is logged in
     const checkAuth = () => {
@@ -53,6 +55,8 @@ function App() {
           );
           const decoded = JSON.parse(jsonPayload);
           
+          console.log('Decoded token in App.js:', decoded); // Debug log
+          
           // Check if token is expired
           const currentTime = Date.now() / 1000;
           if (decoded.exp < currentTime) {
@@ -61,30 +65,35 @@ function App() {
             setUser(null);
           } else {
             setIsAuthenticated(true);
-            setUser({ id: decoded.id, role: decoded.role });
+            // Fix: Ensure we're correctly extracting the role
+            setUser({ 
+              id: decoded.userId || decoded.id, 
+              role: decoded.role || decoded.userRole || (decoded.isAdmin === true ? 'admin' : 'user')
+            });
           }
         } catch (err) {
+          console.error('Error decoding token:', err);
           localStorage.removeItem('token');
           setIsAuthenticated(false);
           setUser(null);
         }
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
       }
       setLoading(false);
     };
 
     checkAuth();
 
-    // Aggiungi event listener per il logout automatico quando l'utente chiude la pagina
-    const handleBeforeUnload = () => {
-      handleLogout();
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Cleanup dell'event listener quando il componente viene smontato
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
+    // Remove the automatic logout on page close - this is causing issues
+    // const handleBeforeUnload = () => {
+    //   handleLogout();
+    // };
+    // window.addEventListener('beforeunload', handleBeforeUnload);
+    // return () => {
+    //   window.removeEventListener('beforeunload', handleBeforeUnload);
+    // };
   }, []);
 
   // Protected route component
@@ -95,7 +104,10 @@ function App() {
       return <Navigate to="/login" />;
     }
     
-    if (adminOnly && user?.role !== 'admin') {
+    console.log('ProtectedRoute check - user:', user, 'adminOnly:', adminOnly); // Debug log
+    
+    if (adminOnly && (!user || user.role !== 'admin')) {
+      console.log('User is not admin, redirecting to dashboard');
       return <Navigate to="/dashboard" />;
     }
     
@@ -108,7 +120,12 @@ function App() {
         <Navbar isAuthenticated={isAuthenticated} user={user} setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
         <main className="flex-grow-1 container py-4">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Landing />} />
+            <Route path="/home" element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } />
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
             <Route path="/register" element={
               <ProtectedRoute adminOnly={true}>
@@ -159,6 +176,14 @@ function App() {
                 <AdminBonus />
               </ProtectedRoute>
             } />
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute adminOnly={true}>
+                  <AdminPanel />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
         <Footer />
