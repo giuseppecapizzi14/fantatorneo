@@ -19,7 +19,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
     <BootstrapNavbar 
       expand="lg" 
       expanded={expanded} 
-      className="mb-4 custom-navbar"
+      className="mb-4 custom-navbar sticky-top"
       style={{
         backgroundColor: 'rgba(33, 37, 41, 0.4)',
         backdropFilter: 'blur(8px)',
@@ -44,14 +44,14 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
           className="custom-toggler"
         />
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto d-flex align-items-center">
+          <Nav className="ms-auto d-flex flex-column align-items-center justify-content-center w-100">
             {isAuthenticated ? (
               <>
                 <Nav.Link 
                   as={Link} 
                   to="/dashboard" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex align-items-center"
+                  className="text-white text-uppercase d-flex justify-content-center my-2"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Dashboard
@@ -60,7 +60,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/teams" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex align-items-center"
+                  className="text-white text-uppercase d-flex justify-content-center my-2"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Squadre
@@ -69,7 +69,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/leaderboard" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex align-items-center"
+                  className="text-white text-uppercase d-flex justify-content-center my-2"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Classifica
@@ -80,22 +80,22 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                     as={Link} 
                     to="/admin" 
                     onClick={closeNavbar}
-                    className="text-white text-uppercase me-3 d-flex align-items-center"
+                    className="text-white text-uppercase d-flex justify-content-center my-2"
                     style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                   >
-                    Pannello Admin
+                    Admin
                   </Nav.Link>
                 )}
                 
                 <Button 
                   variant="outline-light" 
                   onClick={() => {handleLogout(); closeNavbar();}}
-                  className="ms-2 d-flex align-items-center justify-content-center"
+                  className="d-flex justify-content-center my-2"
                   style={{ 
                     backgroundColor: 'rgba(220, 53, 69, 0.3)',
-                    borderRadius: '50px',
+                    borderRadius: '10px',
+                    borderColor: 'rgba(255, 80, 97, 0.3)',
                     padding: '0.25rem 0.75rem',
-                    height: '38px'  // Match the height of Nav.Link elements
                   }}
                 >
                   Logout
@@ -107,7 +107,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/login" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex align-items-center"
+                  className="text-white text-uppercase d-flex justify-content-center"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Login
