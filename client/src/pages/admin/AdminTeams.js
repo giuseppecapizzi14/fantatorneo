@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Modal, Form, Alert, Badge, Spinner, Row, Col} from 'react-bootstrap';
-import { FaUsers, FaUserPlus, FaEdit, FaTrash, FaTrophy } from 'react-icons/fa';
+import { FaUserPlus, FaEdit, FaTrash, FaTrophy } from 'react-icons/fa';
 import { getTeams, updateTeam, deleteTeam, createTeam } from '../../services/api';
 
 const AdminTeams = () => {

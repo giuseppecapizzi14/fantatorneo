@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { FaTrophy, FaUsers, FaFutbol, FaChartLine } from 'react-icons/fa';
 import axios from 'axios';
+import { getUserTeam } from '../services/api'; // Importa la funzione getUserTeam
 
 const Home = () => {
   const [hasTeam, setHasTeam] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
   
   // Check if user has a team
   useEffect(() => {
@@ -29,9 +29,10 @@ const Home = () => {
           );
           const decoded = JSON.parse(jsonPayload);
           
-          // Get the user ID from the decoded token
-          const userId = decoded.userId || decoded.id || decoded.sub;
+          // Modifica: Estrai l'ID utente in modo più robusto, controllando tutti i possibili campi
+          const userId = decoded.user?.id || decoded.userId || decoded.id || decoded.user?.userId || decoded.sub;
           
+          console.log('Decoded token:', decoded); // Log completo del token decodificato
           console.log('Checking teams for user ID:', userId); // Debug log
           
           if (!userId) {
@@ -41,16 +42,28 @@ const Home = () => {
             return;
           }
           
-          // Make API call to check user's teams with the specific user ID
-          const response = await axios.get(`/api/teams/user/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          // Utilizza la funzione importata invece di fare una chiamata diretta
+          const response = await getUserTeam(userId);
           
-          // If user has a team, response will have data
-          setHasTeam(response.data && response.data.length > 0);
+          console.log('Team API response:', response);
+          
+          // Se riceviamo una risposta valida, l'utente ha una squadra
+          if (response.data) {
+            setHasTeam(true);
+          } else {
+            setHasTeam(false);
+          }
+          
         } catch (error) {
           console.error('Error checking user team:', error);
-          setHasTeam(false);
+          
+          // Se l'errore è 404 Not Found, significa che l'utente non ha una squadra
+          if (error.response && error.response.status === 404) {
+            setHasTeam(false);
+          } else {
+            // Per altri errori, assumiamo che non ci sia una squadra
+            setHasTeam(false);
+          }
         }
       } else {
         setIsAuthenticated(false);
@@ -74,6 +87,15 @@ const Home = () => {
         requiresAuth: true,
         showOnlyIfNoTeam: true
       },
+
+      {
+        title: 'Dashboard',
+        path: '/dashboard',
+        icon: <FaChartLine size={40} />,
+        description: 'Controlla i punteggi e le statistiche della tua squadra',
+        requiresAuth: true
+      },
+
       {
         title: 'Classifica',
         path: '/leaderboard',
@@ -81,30 +103,29 @@ const Home = () => {
         description: 'Scopri chi è in testa alla classifica del torneo',
         requiresAuth: true
       },
+
       {
         title: 'Tutte le Squadre',
         path: '/teams',
         icon: <FaUsers size={40} />,
         description: 'Esplora le squadre create dagli altri partecipanti',
         requiresAuth: true
-      },
-      {
-        title: 'Dashboard',
-        path: '/dashboard',
-        icon: <FaChartLine size={40} />,
-        description: 'Controlla i punteggi e le statistiche della tua squadra',
-        requiresAuth: true
       }
     ];
     
     // Filter out "Crea la tua Squadra" if user already has a team
-    return allFeatures.filter(feature => 
-      !feature.showOnlyIfNoTeam || (feature.showOnlyIfNoTeam && !hasTeam)
-    );
+    const filteredFeatures = allFeatures.filter(feature => {
+      const shouldShow = !feature.showOnlyIfNoTeam || (feature.showOnlyIfNoTeam && !hasTeam);
+      console.log(`Feature "${feature.title}" - showOnlyIfNoTeam: ${feature.showOnlyIfNoTeam}, hasTeam: ${hasTeam}, shouldShow: ${shouldShow}`);
+      return shouldShow;
+    });
+    
+    return filteredFeatures;
   };
 
   return (
     <Container>
+      {console.log('Rendering with hasTeam:', hasTeam)}
       <div className="text-center mb-5">
         <h1 className="mb-3">Benvenuto al FANTATORNEO</h1>
       </div>
