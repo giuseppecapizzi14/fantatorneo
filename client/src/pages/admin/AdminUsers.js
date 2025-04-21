@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// Add Badge to the imports
-import { Container, Table, Button, Modal, Form, Alert, Badge } from 'react-bootstrap';
+import { Container, Card, Button, Modal, Form, Alert, Badge, Spinner, Row, Col } from 'react-bootstrap';
+import { FaUserCog, FaUserPlus, FaEdit, FaTrash, FaUserShield } from 'react-icons/fa';
 import { getUsers, updateUser, deleteUser, register } from '../../services/api';
 
 const AdminUsers = () => {
@@ -97,71 +97,146 @@ const AdminUsers = () => {
   if (loading && users.length === 0) {
     return (
       <Container className="text-center my-5">
-        <h3>Caricamento utenti...</h3>
+        <Spinner animation="border" role="status" variant="warning">
+          <span className="visually-hidden">Caricamento...</span>
+        </Spinner>
       </Container>
     );
   }
 
   return (
     <Container>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Gestione Utenti</h2>
-        <Button variant="success" onClick={handleAddClick}>
-          <i className="bi bi-plus-circle me-1"></i> Nuovo Utente
+      <style>
+        {`
+          .admin-card {
+            background-color: rgba(52, 58, 64, 0.7);
+            color: white;
+            border-color: rgba(255, 208, 0, 0.3);
+            margin-bottom: 1rem;
+            transition: none !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+          }
+          .admin-card:hover {
+            transform: none !important;
+            box-shadow: none !important;
+          }
+          .admin-card .card-header {
+            background-color: rgba(33, 37, 41, 0.5);
+            border-color: rgba(255, 208, 0, 0.3);
+          }
+          .admin-modal .modal-content {
+            background-color: #343a40;
+            color: white;
+          }
+          .admin-modal .modal-header {
+            border-bottom: 1px solid rgba(255, 208, 0, 0.3);
+          }
+          .admin-modal .modal-footer {
+            border-top: 1px solid rgba(255, 208, 0, 0.3);
+          }
+          .admin-form .form-control, .admin-form .form-select {
+            background-color: #212529;
+            color: white;
+            border-color: rgba(255, 208, 0, 0.3);
+          }
+          .admin-form .form-control:focus, .admin-form .form-select:focus {
+            border-color: rgb(255, 208, 0);
+            box-shadow: 0 0 0 0.25rem rgba(255, 208, 0, 0.25);
+          }
+          .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+          }
+          .compact-btn {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.2rem;
+          }
+          @media (max-width: 576px) {
+            .action-buttons {
+              flex-direction: center;
+              width: 100%;
+            }
+            .action-buttons .btn {
+              width: 100%;
+              margin-bottom: 0.5rem;
+            }
+          }
+        `}
+      </style>
+      
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <h2 className="text-warning mb-3 mb-md-0">
+          <FaUserCog className="me-2" />
+          Gestione Utenti
+        </h2>
+        <Button 
+          variant="warning" 
+          onClick={handleAddClick}
+          className="d-flex align-items-center justify-content-center text-dark mx-auto mx-md-0"
+          style={{ maxWidth: '180px' }}
+        >
+          <FaUserPlus className="me-2" /> Nuovo Utente
         </Button>
       </div>
       
       {error && <Alert variant="danger">{error}</Alert>}
       
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Username</th>
-            <th>Ruolo</th>
-            <th>Azioni</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.username}</td>
-              <td>
-                <Badge bg={user.role === 'admin' ? 'danger' : 'primary'}>
-                  {user.role}
-                </Badge>
-              </td>
-              <td>
-                <Button 
-                  variant="warning" 
-                  size="sm" 
-                  className="me-2"
-                  onClick={() => handleEditClick(user)}
-                >
-                  Modifica
-                </Button>
-                <Button 
-                  variant="danger" 
-                  size="sm"
-                  onClick={() => handleDeleteClick(user.id)}
-                >
-                  Elimina
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <Row>
+        {users.map(user => (
+          <Col xs={12} key={user.id}>
+            <Card className="admin-card">
+              <Card.Body>
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                  <div className="mb-3 mb-md-0">
+                    <div className="d-flex align-items-center mb-2">
+                      <h5 className="text-warning mb-0">{user.name}</h5>
+                      <Badge bg={user.role === 'admin' ? 'warning' : 'info'} 
+                             className={`ms-2 ${user.role === 'admin' ? 'text-dark' : ''}`}>
+                        {user.role === 'admin' && <FaUserShield className="me-1" />}
+                        {user.role}
+                      </Badge>
+                    </div>
+                    <div className="text-white-50">Username:</div>
+                    <div className="text-white-50">{user.username}</div>
+                  </div>
+                  
+                  <div className="action-buttons">
+                    <Button 
+                      variant="warning" 
+                      size="sm" 
+                      className="text-dark d-flex align-items-center justify-content-center compact-btn"
+                      onClick={() => handleEditClick(user)}
+                    >
+                      <FaEdit className="me-1" /> Modifica
+                    </Button>
+                    <Button 
+                      variant="danger" 
+                      size="sm"
+                      className="d-flex align-items-center justify-content-center compact-btn"
+                      onClick={() => handleDeleteClick(user.id)}
+                    >
+                      <FaTrash className="me-1" /> Elimina
+                    </Button>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
       
       {/* Edit User Modal */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal 
+        show={showEditModal} 
+        onHide={() => setShowEditModal(false)}
+        className="admin-modal"
+        centered
+      >
         <Modal.Header closeButton>
-          <Modal.Title>Modifica Utente</Modal.Title>
+          <Modal.Title className="text-warning">Modifica Utente</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={handleEditSubmit}>
+        <Form onSubmit={handleEditSubmit} className="admin-form">
           <Modal.Body>
             <Form.Group className="mb-3">
               <Form.Label>Nome</Form.Label>
@@ -211,7 +286,7 @@ const AdminUsers = () => {
             <Button variant="secondary" onClick={() => setShowEditModal(false)}>
               Annulla
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="warning" type="submit" className="text-dark">
               Salva Modifiche
             </Button>
           </Modal.Footer>
@@ -219,11 +294,16 @@ const AdminUsers = () => {
       </Modal>
       
       {/* Add User Modal */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+      <Modal 
+        show={showAddModal} 
+        onHide={() => setShowAddModal(false)}
+        className="admin-modal"
+        centered
+      >
         <Modal.Header closeButton>
-          <Modal.Title>Nuovo Utente</Modal.Title>
+          <Modal.Title className="text-warning">Nuovo Utente</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={handleAddSubmit}>
+        <Form onSubmit={handleAddSubmit} className="admin-form">
           <Modal.Body>
             <Form.Group className="mb-3">
               <Form.Label>Nome</Form.Label>
@@ -274,7 +354,7 @@ const AdminUsers = () => {
             <Button variant="secondary" onClick={() => setShowAddModal(false)}>
               Annulla
             </Button>
-            <Button variant="success" type="submit">
+            <Button variant="warning" type="submit" className="text-dark">
               Crea Utente
             </Button>
           </Modal.Footer>
