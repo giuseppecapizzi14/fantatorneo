@@ -12,23 +12,26 @@ const AdminPanel = () => {
       icon: <FaUsers size={40} />,
       description: 'Gestisci gli utenti della piattaforma'
     },
+    
     {
       title: 'Gestione Squadre',
       path: '/admin/teams',
       icon: <FaTrophy size={40} />,
       description: 'Gestisci le squadre del torneo'
     },
-    {
-      title: 'Gestione Giocatori',
-      path: '/admin/players',
-      icon: <FaFutbol size={40} />,
-      description: 'Gestisci i giocatori disponibili'
-    },
+
     {
       title: 'Gestione Bonus',
       path: '/admin/bonus',
       icon: <FaStar size={40} />,
       description: 'Gestisci i bonus e i punteggi'
+    },
+
+    {
+      title: 'Gestione Giocatori',
+      path: '/admin/players',
+      icon: <FaFutbol size={40} />,
+      description: 'Gestisci i giocatori disponibili'
     }
   ];
 

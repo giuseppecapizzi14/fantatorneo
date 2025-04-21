@@ -177,7 +177,7 @@ const AdminTeams = () => {
       
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <h2 className="text-warning mb-3 mb-md-0">
-          <FaUsers className="me-2" />
+          <FaTrophy className="me-3" />
           Gestione Squadre
         </h2>
         <Button 
