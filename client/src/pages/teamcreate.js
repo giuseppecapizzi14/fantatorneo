@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Form, Button, Alert, Card, Row, Col, Badge, ListGroup } from 'react-bootstrap';
+import { Container, Form, Button, Alert, Card, Row, Col, Badge, ListGroup, Offcanvas, Tabs, Tab, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getPlayers, createTeam } from '../services/api';
+import { FaFutbol, FaShieldAlt, FaRunning, FaHandsHelping, FaSave, FaTimes, FaList, FaTrophy, FaSearch } from 'react-icons/fa';
 
 const TeamCreate = () => {
   // Budget state variables
@@ -16,7 +17,10 @@ const TeamCreate = () => {
   const [selectedOutfieldPlayers, setSelectedOutfieldPlayers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); // Add this line to define the success state
+  const [success, setSuccess] = useState('');
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+  const [searchTerm, setSearchTerm] = useState(''); // Add the missing state variable
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -148,130 +152,349 @@ const TeamCreate = () => {
   // Get selected player objects for display
   const selectedPlayerObjects = players.filter(player => selectedPlayers.includes(player.id));
 
+  // Filtra i giocatori in base alla posizione selezionata e al termine di ricerca
+  const getFilteredPlayers = () => {
+    let filteredByPosition;
+    
+    if (activeTab === 'all') {
+      filteredByPosition = players.filter(player => !selectedPlayers.includes(player.id));
+    } else if (activeTab === 'portieri') {
+      filteredByPosition = players.filter(player => !selectedPlayers.includes(player.id) && player.position === 'Portiere');
+    } else if (activeTab === 'difensori') {
+      filteredByPosition = players.filter(player => !selectedPlayers.includes(player.id) && player.position === 'Difensore');
+    } else if (activeTab === 'centrocampisti') {
+      filteredByPosition = players.filter(player => !selectedPlayers.includes(player.id) && player.position === 'Centrocampista');
+    } else if (activeTab === 'attaccanti') {
+      filteredByPosition = players.filter(player => !selectedPlayers.includes(player.id) && player.position === 'Attaccante');
+    } else {
+      filteredByPosition = [];
+    }
+    
+    // Filtra ulteriormente in base al termine di ricerca
+    if (searchTerm.trim() === '') {
+      return filteredByPosition;
+    } else {
+      const searchTermLower = searchTerm.toLowerCase();
+      return filteredByPosition.filter(player => 
+        player.name.toLowerCase().includes(searchTermLower)
+      );
+    }
+  };
+
+  // Ottieni il colore del badge in base alla posizione
+  const getBadgeColor = (position) => {
+    switch (position) {
+      case 'Portiere': return 'warning';
+      case 'Difensore': return 'success';
+      case 'Centrocampista': return 'info';
+      case 'Attaccante': return 'danger';
+      default: return 'secondary';
+    }
+  };
+
+  // Ottieni l'icona in base alla posizione
+  const getPositionIcon = (position) => {
+    switch (position) {
+      case 'Portiere': return <FaHandsHelping className="me-1" />;
+      case 'Difensore': return <FaShieldAlt className="me-1" />;
+      case 'Centrocampista': return <FaRunning className="me-1" />;
+      case 'Attaccante': return <FaFutbol className="me-1" />;
+      default: return null;
+    }
+  };
+
   return (
-    <Container fluid>
-      <h2 className="my-4">Crea la tua Squadra</h2>
+    <Container>
+      <style>
+        {`
+          .admin-card {
+            background-color: rgba(52, 58, 64, 0.7);
+            color: white;
+            border-color: rgba(255, 208, 0, 0.3);
+            margin-bottom: 1rem;
+            transition: none !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+          }
+          .admin-card:hover {
+            transform: none !important;
+            box-shadow: none !important;
+          }
+          .admin-card .card-header {
+            background-color: rgba(33, 37, 41, 0.5);
+            border-color: rgba(255, 208, 0, 0.3);
+          }
+          .admin-form .form-control, .admin-form .form-select {
+            background-color: #212529;
+            color: white;
+            border-color: rgba(255, 208, 0, 0.3);
+          }
+          .admin-form .form-control:focus, .admin-form .form-select:focus {
+            border-color: rgb(255, 208, 0);
+            box-shadow: 0 0 0 0.25rem rgba(255, 208, 0, 0.25);
+          }
+          .list-group-item.admin-card {
+            padding: 0.5rem 1rem;
+          }
+          .custom-offcanvas .offcanvas-header,
+          .custom-offcanvas .offcanvas-body {
+            background-color: #343a40;
+            color: white;
+          }
+          .custom-offcanvas .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+          }
+          .nav-tabs .nav-link {
+            color: white;
+            border-color: rgba(255, 208, 0, 0.3);
+          }
+          .nav-tabs .nav-link.active {
+            background-color: rgba(255, 208, 0, 0.2);
+            color: rgb(255, 208, 0);
+            border-color: rgba(255, 208, 0, 0.5);
+          }
+        `}
+      </style>
+      
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <h2 className="text-warning mb-3 mb-md-0">
+          <FaTrophy className="me-2" />
+          Crea la tua Squadra
+        </h2>
+        <Button 
+          variant="outline-warning" 
+          onClick={() => setShowSidebar(true)}
+          className="d-md-none"
+        >
+          <FaList className="me-2" /> Visualizza Giocatori
+        </Button>
+      </div>
       
       {error && <Alert variant="danger">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
       
       <Row>
-        {/* Main content - 9 columns */}
-        <Col md={9}>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>Nome Squadra</Form.Label>
-              <Form.Control 
-                type="text" 
-                value={teamName} 
-                onChange={(e) => setTeamName(e.target.value)}
-                required 
-              />
-            </Form.Group>
-            
-            <div className="mb-3">
-              <h4>Seleziona i Giocatori</h4>
-              <p>Seleziona esattamente 1 portiere e 4 giocatori di movimento</p>
-              
-              <div className="d-flex justify-content-between mb-2">
-                <div>
-                  <strong>Portieri selezionati:</strong> {selectedGoalkeepers.length}/1
+        <Col md={8}>
+          <Card className="admin-card mb-4">
+            <Card.Header>
+              <h5 className="text-warning mb-0">Dettagli Squadra</h5>
+            </Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleSubmit} className="admin-form">
+                <Form.Group className="mb-3">
+                  <Form.Label className="text-white">Nome Squadra</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={teamName}
+                    onChange={(e) => setTeamName(e.target.value)}
+                    placeholder="Inserisci il nome della tua squadra"
+                    required
+                    className="bg-dark text-white border-warning"
+                  />
+                </Form.Group>
+                
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div className="text-white">
+                    Budget: <span className="text-warning">{remainingBudget}</span> / {totalBudget} crediti
+                  </div>
+                  <div className="text-white">
+                    Giocatori: <span className="text-warning">{selectedPlayers.length}</span> / 5
+                  </div>
                 </div>
-                <div>
-                  <strong>Giocatori di movimento selezionati:</strong> {selectedOutfieldPlayers.length}/4
+                
+                <div className="mb-4">
+                  <h5 className="text-white mb-3">Giocatori Selezionati</h5>
+                  {selectedPlayerObjects.length === 0 ? (
+                    <p className="text-muted">Nessun giocatore selezionato</p>
+                  ) : (
+                    <ListGroup>
+                      {selectedPlayerObjects.map(player => (
+                        <ListGroup.Item key={player.id} className="admin-card border-warning mb-2">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                              <Badge bg={getBadgeColor(player.position)} className="me-2">
+                                {getPositionIcon(player.position)} {player.position.charAt(0)}
+                              </Badge>
+                              <span className="text-white">{player.name}</span>
+                            </div>
+                            <div className="d-flex align-items-center">
+                              <Badge bg="secondary" className="me-2">{player.price} cr</Badge>
+                              <Button 
+                                variant="outline-danger" 
+                                size="sm" 
+                                onClick={() => handlePlayerSelect(player)}
+                              >
+                                <FaTimes />
+                              </Button>
+                            </div>
+                          </div>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  )}
                 </div>
-              </div>
+                
+                <div className="d-grid">
+                  <Button 
+                    variant="warning" 
+                    type="submit" 
+                    disabled={loading || selectedPlayers.length === 0}
+                    className="text-dark"
+                  >
+                    {loading ? 'Creazione in corso...' : 'Crea Squadra'} <FaSave className="ms-2" />
+                  </Button>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+        
+        <Col md={4} className="d-none d-md-block">
+          <Card className="admin-card">
+            <Card.Header>
+              <h5 className="text-warning mb-0">Seleziona Giocatori</h5>
+            </Card.Header>
+            <Card.Body>
+              <Form.Group className="mb-3">
+                <InputGroup>
+                  <InputGroup.Text className="search-icon">
+                    <FaSearch />
+                  </InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder="Cerca giocatori..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
+                  />
+                  {searchTerm && (
+                    <Button 
+                      variant="outline-warning" 
+                      onClick={() => setSearchTerm('')}
+                    >
+                      <FaTimes />
+                    </Button>
+                  )}
+                </InputGroup>
+              </Form.Group>
               
-              <Row>
-                {players
-                  .filter(player => !selectedPlayers.includes(player.id)) // Only show unselected players
-                  .map(player => (
-                    <Col key={player.id} md={4} className="mb-3">
+              <Tabs
+                activeKey={activeTab}
+                onSelect={(k) => setActiveTab(k)}
+                className="mb-3"
+              >
+                <Tab eventKey="all" title="Tutti">
+                  <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                    {getFilteredPlayers().map(player => (
                       <Card 
+                        key={player.id} 
+                        className="admin-card border-warning mb-2"
                         onClick={() => handlePlayerSelect(player)}
-                        className="player-card"
-                        style={{ 
-                          cursor: 'pointer',
-                          border: '1px solid #dee2e6'
-                        }}
+                        style={{ cursor: 'pointer' }}
                       >
-                        <Card.Body>
-                          <Card.Title>{player.name}</Card.Title>
-                          <div className="d-flex justify-content-between align-items-center mb-2">
-                            <Badge bg={player.position === 'Portiere' ? 'warning' : 'info'}>
-                              {player.position}
-                            </Badge>
-                            <span className="text-muted">{player.price}</span>
+                        <Card.Body className="py-2 px-3">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                              <Badge bg={getBadgeColor(player.position)} className="me-2">
+                                {getPositionIcon(player.position)} {player.position.charAt(0)}
+                              </Badge>
+                              <span className="text-white">{player.name}</span>
+                            </div>
+                            <Badge bg="warning" className="text-dark">{player.price} cr</Badge>
                           </div>
                         </Card.Body>
                       </Card>
-                    </Col>
-                  ))}
-              </Row>
-            </div>
-            
-            <Button 
-                type="submit" 
-                variant="primary" 
-                disabled={loading}
-                // Rimuoviamo la condizione: || selectedPlayers.length !== 5
-              >
-                {loading ? 'Creazione...' : 'Crea Squadra'}
-              </Button>
-          </Form>
-        </Col>
-        
-        {/* Sidebar - 3 columns */}
-        <Col md={3}>
-          <Card className="sticky-top" style={{ top: '20px' }}>
-            <Card.Header>
-              <h5 className="mb-0">Riepilogo Squadra</h5>
-            </Card.Header>
-            <Card.Body>
-              <div className="mb-3">
-                <h6>Budget</h6>
-                <div className="d-flex justify-content-between">
-                  <span>Totale:</span>
-                  <strong>{totalBudget}</strong>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <span>Speso:</span>
-                  <strong>{totalBudget - remainingBudget}</strong>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <span>Rimanente:</span>
-                  <strong className={remainingBudget < 50 ? 'text-danger' : ''}>
-                    {remainingBudget}
-                  </strong>
-                </div>
-              </div>
-              
-              <h6>Giocatori Selezionati ({selectedPlayerObjects.length}/5)</h6>
-              {selectedPlayerObjects.length === 0 ? (
-                <p className="text-muted">Nessun giocatore selezionato</p>
-              ) : (
-                <ListGroup variant="flush">
-                  {selectedPlayerObjects.map(player => (
-                    <ListGroup.Item 
-                      key={player.id}
-                      className="d-flex justify-content-between align-items-center"
-                      action
-                      onClick={() => handlePlayerSelect(player)}
-                    >
-                      <div>
-                        <div>{player.name}</div>
-                        <Badge bg={player.position === 'Portiere' ? 'warning' : 'info'}>
-                          {player.position}
-                        </Badge>
-                      </div>
-                      <span>{player.price}</span>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-              )}
+                    ))}
+                  </div>
+                </Tab>
+                <Tab eventKey="portieri" title="Portieri">
+                  {/* Contenuto simile per i portieri */}
+                </Tab>
+                <Tab eventKey="difensori" title="Difensori">
+                  {/* Contenuto simile per i difensori */}
+                </Tab>
+                <Tab eventKey="centrocampisti" title="Centrocampisti">
+                  {/* Contenuto simile per i centrocampisti */}
+                </Tab>
+                <Tab eventKey="attaccanti" title="Attaccanti">
+                  {/* Contenuto simile per gli attaccanti */}
+                </Tab>
+              </Tabs>
             </Card.Body>
           </Card>
         </Col>
       </Row>
+      
+      {/* Offcanvas per dispositivi mobili */}
+      <Offcanvas 
+        show={showSidebar} 
+        onHide={() => setShowSidebar(false)} 
+        placement="end"
+        className="custom-offcanvas"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title className="text-warning">Seleziona Giocatori</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <Form.Group className="mb-3">
+            <InputGroup>
+              <InputGroup.Text className="search-icon">
+                <FaSearch />
+              </InputGroup.Text>
+              <Form.Control
+                type="text"
+                placeholder="Cerca giocatori..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              {searchTerm && (
+                <Button 
+                  variant="outline-warning" 
+                  onClick={() => setSearchTerm('')}
+                >
+                  <FaTimes />
+                </Button>
+              )}
+            </InputGroup>
+          </Form.Group>
+          
+          <Tabs
+            activeKey={activeTab}
+            onSelect={(k) => setActiveTab(k)}
+            className="mb-3"
+          >
+            <Tab eventKey="all" title="Tutti">
+              {getFilteredPlayers().map(player => (
+                <Card 
+                  key={player.id} 
+                  className="admin-card border-warning mb-2"
+                  onClick={() => {
+                    handlePlayerSelect(player);
+                    if (selectedPlayers.includes(player.id)) {
+                      setShowSidebar(false);
+                    }
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <Card.Body className="py-2 px-3">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        <Badge bg={getBadgeColor(player.position)} className="me-2">
+                          {getPositionIcon(player.position)} {player.position.charAt(0)}
+                        </Badge>
+                        <span className="text-white">{player.name}</span>
+                      </div>
+                      <Badge bg="warning" className="text-dark">{player.price} cr</Badge>
+                    </div>
+                  </Card.Body>
+                </Card>
+              ))}
+            </Tab>
+            {/* Altri tab simili */}
+          </Tabs>
+        </Offcanvas.Body>
+      </Offcanvas>
     </Container>
   );
 };

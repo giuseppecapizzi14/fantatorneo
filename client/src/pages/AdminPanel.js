@@ -26,13 +26,6 @@ const AdminPanel = () => {
       icon: <FaStar size={40} />,
       description: 'Gestisci i bonus e i punteggi'
     },
-
-    {
-      title: 'Gestione Giocatori',
-      path: '/admin/players',
-      icon: <FaFutbol size={40} />,
-      description: 'Gestisci i giocatori disponibili'
-    }
   ];
 
   return (
