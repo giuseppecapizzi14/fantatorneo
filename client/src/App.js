@@ -65,10 +65,10 @@ function App() {
             setUser(null);
           } else {
             setIsAuthenticated(true);
-            // Fix: Ensure we're correctly extracting the role
+            // Corretto: Estrai il ruolo dal percorso corretto nel token
             setUser({ 
-              id: decoded.userId || decoded.id, 
-              role: decoded.role || decoded.userRole || (decoded.isAdmin === true ? 'admin' : 'user')
+              id: decoded.user?.id || decoded.userId || decoded.id, 
+              role: decoded.user?.role || decoded.role || 'user'
             });
           }
         } catch (err) {

@@ -83,7 +83,7 @@ router.post('/login', async (req, res) => {
     jwt.sign(
       payload,
       process.env.JWT_SECRET || 'yourJwtSecretKey',
-      { expiresIn: '1d' },
+      { expiresIn: '7d' }, // Aumentato da 1d a 7d (una settimana)
       (err, token) => {
         if (err) {
           console.error('JWT sign error:', err);
@@ -107,4 +107,19 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Get current user
+router.get('/me', auth, async (req, res) => {
+  try {
+    const user = await pool.query('SELECT id, name, username, role FROM users WHERE id = $1', [req.user.id]);
+    
+    if (user.rows.length === 0) {
+      return res.status(404).json({ message: 'Utente non trovato' });
+    }
+    
+    res.json(user.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 module.exports = router;

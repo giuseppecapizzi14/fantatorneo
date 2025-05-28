@@ -43,7 +43,7 @@ const Footer = () => {
             <p className="mb-2">
               <FaFutbol className="me-2 text-warning" /> 
               <a 
-                href="https://fantamazzarinosummercup.netlify.app/" 
+                href="https://fantamazzarinosummercup.fun/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white"

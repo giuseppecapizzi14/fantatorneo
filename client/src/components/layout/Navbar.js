@@ -44,14 +44,14 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
           className="custom-toggler"
         />
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto d-flex flex-column align-items-center justify-content-center w-100">
+          <Nav className="ms-auto desktop-nav">
             {isAuthenticated ? (
               <>
                 <Nav.Link 
                   as={Link} 
                   to="/dashboard" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex justify-content-center my-2"
+                  className="text-white text-uppercase nav-item"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Dashboard
@@ -60,7 +60,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/teams" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex justify-content-center my-2"
+                  className="text-white text-uppercase nav-item"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Squadre
@@ -69,7 +69,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/leaderboard" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex justify-content-center my-2"
+                  className="text-white text-uppercase nav-item"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Classifica
@@ -80,7 +80,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                     as={Link} 
                     to="/admin" 
                     onClick={closeNavbar}
-                    className="text-white text-uppercase d-flex justify-content-center my-2"
+                    className="text-white text-uppercase nav-item"
                     style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                   >
                     Admin
@@ -90,7 +90,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                 <Button 
                   variant="outline-light" 
                   onClick={() => {handleLogout(); closeNavbar();}}
-                  className="d-flex justify-content-center my-2"
+                  className="nav-item logout-btn"
                   style={{ 
                     backgroundColor: 'rgba(220, 53, 69, 0.3)',
                     borderRadius: '10px',
@@ -105,9 +105,18 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
               <>
                 <Nav.Link 
                   as={Link} 
+                  to="/" 
+                  onClick={closeNavbar}
+                  className="text-white text-uppercase nav-item"
+                  style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                >
+                  Home
+                </Nav.Link>
+                <Nav.Link 
+                  as={Link} 
                   to="/login" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase d-flex justify-content-center"
+                  className="text-white text-uppercase nav-item"
                   style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
                 >
                   Login

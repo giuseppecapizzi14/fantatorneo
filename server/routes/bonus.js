@@ -8,38 +8,38 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-// Get all matchdays
-router.get('/matchdays', auth, async (req, res) => {
+// Get all matches
+router.get('/matches', auth, async (req, res) => {
   try {
-    const matchdays = await pool.query('SELECT * FROM matchdays ORDER BY number');
-    res.json(matchdays.rows);
+    const matches = await pool.query('SELECT * FROM matches ORDER BY group_number, id');
+    res.json(matches.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Get matchday by ID
-router.get('/matchdays/:id', auth, async (req, res) => {
+// Get match by ID
+router.get('/matches/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     
-    const matchday = await pool.query('SELECT * FROM matchdays WHERE id = $1', [id]);
+    const match = await pool.query('SELECT * FROM matches WHERE id = $1', [id]);
     
-    if (matchday.rows.length === 0) {
-      return res.status(404).json({ message: 'Matchday not found' });
+    if (match.rows.length === 0) {
+      return res.status(404).json({ message: 'Match not found' });
     }
     
-    // Get player bonuses for this matchday
+    // Get player bonuses for this match
     const bonuses = await pool.query(`
       SELECT pb.*, p.name as player_name, p.position 
       FROM player_bonuses pb 
       JOIN players p ON pb.player_id = p.id 
-      WHERE pb.matchday_id = $1
+      WHERE pb.match_id = $1
     `, [id]);
     
     res.json({
-      ...matchday.rows[0],
+      ...match.rows[0],
       bonuses: bonuses.rows
     });
   } catch (err) {
@@ -48,55 +48,55 @@ router.get('/matchdays/:id', auth, async (req, res) => {
   }
 });
 
-// Create matchday (admin only)
-router.post('/matchdays', [auth, admin], async (req, res) => {
+// Create match (admin only)
+router.post('/matches', [auth, admin], async (req, res) => {
   try {
-    const { number, name } = req.body;
+    const { home_team, away_team, group_number } = req.body;
     
-    // Check if matchday number already exists
-    const matchdayCheck = await pool.query(
-      'SELECT * FROM matchdays WHERE number = $1',
-      [number]
+    // Check if match already exists
+    const matchCheck = await pool.query(
+      'SELECT * FROM matches WHERE home_team = $1 AND away_team = $2',
+      [home_team, away_team]
     );
     
-    if (matchdayCheck.rows.length > 0) {
-      return res.status(400).json({ message: 'Matchday number already exists' });
+    if (matchCheck.rows.length > 0) {
+      return res.status(400).json({ message: 'Match already exists' });
     }
     
-    const newMatchday = await pool.query(
-      'INSERT INTO matchdays (number, name) VALUES ($1, $2) RETURNING *',
-      [number, name]
+    const newMatch = await pool.query(
+      'INSERT INTO matches (home_team, away_team, group_number) VALUES ($1, $2, $3) RETURNING *',
+      [home_team, away_team, group_number]
     );
     
-    res.status(201).json(newMatchday.rows[0]);
+    res.status(201).json(newMatch.rows[0]);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Add/update player bonuses for a matchday (admin only)
-router.post('/matchdays/:id/bonuses', [auth, admin], async (req, res) => {
+// Add/update player bonuses for a match (admin only)
+router.post('/matches/:id/bonuses', [auth, admin], async (req, res) => {
   try {
-    const matchdayId = req.params.id;
+    const matchId = req.params.id;
     const { bonuses, updateLeaderboard } = req.body;
     
     // Log received data for debugging
-    console.log(`Received bonus update for matchday ${matchdayId}:`, bonuses);
+    console.log(`Received bonus update for match ${matchId}:`, bonuses);
     
     // Validate input
     if (!bonuses || !Array.isArray(bonuses) || bonuses.length === 0) {
       return res.status(400).json({ message: 'Invalid bonuses data' });
     }
     
-    // Check if matchday exists
-    const matchdayCheck = await pool.query(
-      'SELECT * FROM matchdays WHERE id = $1',
-      [matchdayId]
+    // Check if match exists
+    const matchCheck = await pool.query(
+      'SELECT * FROM matches WHERE id = $1',
+      [matchId]
     );
     
-    if (matchdayCheck.rows.length === 0) {
-      return res.status(404).json({ message: 'Matchday not found' });
+    if (matchCheck.rows.length === 0) {
+      return res.status(404).json({ message: 'Match not found' });
     }
     
     // Start a transaction
@@ -128,23 +128,23 @@ router.post('/matchdays/:id/bonuses', [auth, admin], async (req, res) => {
           return res.status(404).json({ message: `Player with ID ${playerId} not found` });
         }
         
-        // Check if bonus already exists for this player and matchday
+        // Check if bonus already exists for this player and match
         const existingBonus = await client.query(
-          'SELECT * FROM player_bonuses WHERE player_id = $1 AND matchday_id = $2',
-          [playerId, matchdayId]
+          'SELECT * FROM player_bonuses WHERE player_id = $1 AND match_id = $2',
+          [playerId, matchId]
         );
         
         if (existingBonus.rows.length > 0) {
           // Update existing bonus
           await client.query(
-            'UPDATE player_bonuses SET points = $1 WHERE player_id = $2 AND matchday_id = $3',
-            [points, playerId, matchdayId]
+            'UPDATE player_bonuses SET points = $1 WHERE player_id = $2 AND match_id = $3',
+            [points, playerId, matchId]
           );
         } else {
           // Insert new bonus
           await client.query(
-            'INSERT INTO player_bonuses (player_id, matchday_id, points) VALUES ($1, $2, $3)',
-            [playerId, matchdayId, points]
+            'INSERT INTO player_bonuses (player_id, match_id, points) VALUES ($1, $2, $3)',
+            [playerId, matchId, points]
           );
         }
         
@@ -219,19 +219,19 @@ router.post('/matchdays/:id/bonuses', [auth, admin], async (req, res) => {
   }
 });
 
-// Delete matchday (admin only)
-router.delete('/matchdays/:id', [auth, admin], async (req, res) => {
+// Delete match (admin only)
+router.delete('/matches/:id', [auth, admin], async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Check if matchday exists
-    const matchdayCheck = await pool.query(
-      'SELECT * FROM matchdays WHERE id = $1',
+    // Check if match exists
+    const matchCheck = await pool.query(
+      'SELECT * FROM matches WHERE id = $1',
       [id]
     );
     
-    if (matchdayCheck.rows.length === 0) {
-      return res.status(404).json({ message: 'Matchday not found' });
+    if (matchCheck.rows.length === 0) {
+      return res.status(404).json({ message: 'Match not found' });
     }
     
     // Start a transaction
@@ -239,9 +239,9 @@ router.delete('/matchdays/:id', [auth, admin], async (req, res) => {
     try {
       await client.query('BEGIN');
       
-      // Get all bonuses for this matchday to subtract points
+      // Get all bonuses for this match to subtract points
       const bonuses = await client.query(
-        'SELECT * FROM player_bonuses WHERE matchday_id = $1',
+        'SELECT * FROM player_bonuses WHERE match_id = $1',
         [id]
       );
       
@@ -254,10 +254,10 @@ router.delete('/matchdays/:id', [auth, admin], async (req, res) => {
       }
       
       // Delete bonuses
-      await client.query('DELETE FROM player_bonuses WHERE matchday_id = $1', [id]);
+      await client.query('DELETE FROM player_bonuses WHERE match_id = $1', [id]);
       
-      // Delete matchday
-      await client.query('DELETE FROM matchdays WHERE id = $1', [id]);
+      // Delete match
+      await client.query('DELETE FROM matches WHERE id = $1', [id]);
       
       // Update team total points
       await client.query(`
@@ -272,7 +272,7 @@ router.delete('/matchdays/:id', [auth, admin], async (req, res) => {
       
       await client.query('COMMIT');
       
-      res.json({ message: 'Matchday deleted successfully' });
+      res.json({ message: 'Match deleted successfully' });
     } catch (err) {
       await client.query('ROLLBACK');
       throw err;
@@ -285,26 +285,26 @@ router.delete('/matchdays/:id', [auth, admin], async (req, res) => {
   }
 });
 
-// Get all players with their bonuses for a specific matchday (admin only)
-router.get('/matchdays/:id/players', [auth, admin], async (req, res) => {
+// Get all players with their bonuses for a specific match (admin only)
+router.get('/matches/:id/players', [auth, admin], async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Check if matchday exists
-    const matchdayCheck = await pool.query(
-      'SELECT * FROM matchdays WHERE id = $1',
+    // Check if match exists
+    const matchCheck = await pool.query(
+      'SELECT * FROM matches WHERE id = $1',
       [id]
     );
     
-    if (matchdayCheck.rows.length === 0) {
-      return res.status(404).json({ message: 'Matchday not found' });
+    if (matchCheck.rows.length === 0) {
+      return res.status(404).json({ message: 'Match not found' });
     }
     
-    // Get all players with their bonuses for this matchday
+    // Get all players with their bonuses for this match
     const players = await pool.query(`
-      SELECT p.*, COALESCE(pb.points, 0) as matchday_points
+      SELECT p.*, COALESCE(pb.points, 0) as match_points
       FROM players p
-      LEFT JOIN player_bonuses pb ON p.id = pb.player_id AND pb.matchday_id = $1
+      LEFT JOIN player_bonuses pb ON p.id = pb.player_id AND pb.match_id = $1
       ORDER BY p.name
     `, [id]);
     
@@ -315,19 +315,19 @@ router.get('/matchdays/:id/players', [auth, admin], async (req, res) => {
   }
 });
 
-// Delete a specific player's bonus for a matchday (admin only)
-router.delete('/matchdays/:id/bonuses/:playerId', [auth, admin], async (req, res) => {
+// Delete a specific player's bonus for a match (admin only)
+router.delete('/matches/:id/bonuses/:playerId', [auth, admin], async (req, res) => {
   try {
-    const { id: matchdayId, playerId } = req.params;
+    const { id: matchId, playerId } = req.params;
     
-    // Check if matchday exists
-    const matchdayCheck = await pool.query(
-      'SELECT * FROM matchdays WHERE id = $1',
-      [matchdayId]
+    // Check if match exists
+    const matchCheck = await pool.query(
+      'SELECT * FROM matches WHERE id = $1',
+      [matchId]
     );
     
-    if (matchdayCheck.rows.length === 0) {
-      return res.status(404).json({ message: 'Matchday not found' });
+    if (matchCheck.rows.length === 0) {
+      return res.status(404).json({ message: 'Match not found' });
     }
     
     // Check if player exists
@@ -347,8 +347,8 @@ router.delete('/matchdays/:id/bonuses/:playerId', [auth, admin], async (req, res
       
       // Get the current bonus value
       const currentBonus = await client.query(
-        'SELECT points FROM player_bonuses WHERE player_id = $1 AND matchday_id = $2',
-        [playerId, matchdayId]
+        'SELECT points FROM player_bonuses WHERE player_id = $1 AND match_id = $2',
+        [playerId, matchId]
       );
       
       if (currentBonus.rows.length === 0) {
@@ -360,8 +360,8 @@ router.delete('/matchdays/:id/bonuses/:playerId', [auth, admin], async (req, res
       
       // Delete the bonus
       await client.query(
-        'DELETE FROM player_bonuses WHERE player_id = $1 AND matchday_id = $2',
-        [playerId, matchdayId]
+        'DELETE FROM player_bonuses WHERE player_id = $1 AND match_id = $2',
+        [playerId, matchId]
       );
       
       // Update player's total points

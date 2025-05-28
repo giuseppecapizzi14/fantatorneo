@@ -153,26 +153,30 @@ export const deletePlayer = (id) => {
   return api.delete(`/players/${id}`);
 };
 
-// Bonus services
-export const getMatchdays = () => {
-  return api.get('/bonus/matchdays');
+// Bonus services - Matches (nuova versione)
+export const getMatches = () => {
+  return api.get('/bonus/matches');
 };
 
-export const getMatchday = (id) => {
-  return api.get(`/bonus/matchdays/${id}`);
+export const getMatch = (id) => {
+  return api.get(`/bonus/matches/${id}`);
 };
 
-export const createMatchday = (matchdayData) => {
-  return api.post('/bonus/matchdays', matchdayData);
+export const createMatch = (matchData) => {
+  return api.post('/bonus/matches', matchData);
 };
 
-export const updateBonuses = async (matchdayId, bonusesData) => {
+export const getPlayersWithBonuses = (matchId) => {
+  return api.get(`/bonus/matches/${matchId}/players`);
+};
+
+export const updateBonuses = async (matchId, bonusesData) => {
   try {
     // Add logging to debug the request
-    console.log(`Sending bonus update to /bonus/matchdays/${matchdayId}/bonuses:`, bonusesData);
+    console.log(`Sending bonus update to /bonus/matches/${matchId}/bonuses:`, bonusesData);
     
     // Make sure we're using the api instance with interceptors
-    const response = await api.post(`/bonus/matchdays/${matchdayId}/bonuses`, bonusesData);
+    const response = await api.post(`/bonus/matches/${matchId}/bonuses`, bonusesData);
     
     // Log the response
     console.log('Bonus update response:', response.data);
@@ -189,12 +193,18 @@ export const updateBonuses = async (matchdayId, bonusesData) => {
   }
 };
 
-export const deleteMatchday = (id) => {
-  return api.delete(`/bonus/matchdays/${id}`);
+export const deleteMatch = (id) => {
+  return api.delete(`/bonus/matches/${id}`);
 };
 
-export const getPlayersWithBonuses = (matchdayId) => {
-  return api.get(`/bonus/matchdays/${matchdayId}/players`);
+export const deleteBonus = async (matchId, playerId) => {
+  try {
+    const response = await api.delete(`/bonus/matches/${matchId}/bonuses/${playerId}`);
+    return response;
+  } catch (error) {
+    console.error('API error deleting bonus:', error);
+    throw error;
+  }
 };
 
 // Leaderboard services
@@ -204,16 +214,6 @@ export const getLeaderboard = () => {
 
 export const getDetailedLeaderboard = () => {
   return api.get('/leaderboard/detailed');
-};
-
-export const deleteBonus = async (matchdayId, playerId) => {
-  try {
-    const response = await api.delete(`/bonus/matchdays/${matchdayId}/bonuses/${playerId}`);
-    return response;
-  } catch (error) {
-    console.error('API error deleting bonus:', error);
-    throw error;
-  }
 };
 
 export default api;

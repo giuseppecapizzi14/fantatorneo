@@ -201,3 +201,35 @@
     }
   }
 }
+
+/* Stili per la navbar su dispositivi mobili (default) */
+.desktop-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.desktop-nav .nav-item {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+/* Stili per la navbar su dispositivi desktop */
+@media (min-width: 992px) {
+  .desktop-nav {
+    flex-direction: row;
+    justify-content: flex-end;
+    width: auto;
+  }
+  
+  .desktop-nav .nav-item {
+    margin: 0 0.75rem;
+  }
+  
+  .desktop-nav .logout-btn {
+    margin-left: 0.75rem;
+  }
+}

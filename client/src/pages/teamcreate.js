@@ -20,8 +20,15 @@ const TeamCreate = () => {
   const [success, setSuccess] = useState('');
   const [showSidebar, setShowSidebar] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
-  const [searchTerm, setSearchTerm] = useState(''); // Add the missing state variable
+  const [searchTerm, setSearchTerm] = useState('');
+  const [teamFilter, setTeamFilter] = useState(''); // Nuovo stato per il filtro della squadra
   const navigate = useNavigate();
+
+  // Ottieni la lista unica di squadre dai giocatori
+  const getTeams = () => {
+    const teams = [...new Set(players.map(player => player.squad))].filter(team => team);
+    return teams.sort();
+  };
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -152,7 +159,7 @@ const TeamCreate = () => {
   // Get selected player objects for display
   const selectedPlayerObjects = players.filter(player => selectedPlayers.includes(player.id));
 
-  // Filtra i giocatori in base alla posizione selezionata e al termine di ricerca
+  // Filtra i giocatori in base alla posizione selezionata, alla squadra e al termine di ricerca
   const getFilteredPlayers = () => {
     let filteredByPosition;
     
@@ -170,12 +177,18 @@ const TeamCreate = () => {
       filteredByPosition = [];
     }
     
+    // Filtra per squadra se è selezionata
+    let filteredByTeam = filteredByPosition;
+    if (teamFilter) {
+      filteredByTeam = filteredByPosition.filter(player => player.squad === teamFilter);
+    }
+    
     // Filtra ulteriormente in base al termine di ricerca
     if (searchTerm.trim() === '') {
-      return filteredByPosition;
+      return filteredByTeam;
     } else {
       const searchTermLower = searchTerm.toLowerCase();
-      return filteredByPosition.filter(player => 
+      return filteredByTeam.filter(player => 
         player.name.toLowerCase().includes(searchTermLower)
       );
     }
@@ -183,24 +196,26 @@ const TeamCreate = () => {
 
   // Ottieni il colore del badge in base alla posizione
   const getBadgeColor = (position) => {
-    switch (position) {
-      case 'Portiere': return 'warning';
-      case 'Difensore': return 'success';
-      case 'Centrocampista': return 'info';
-      case 'Attaccante': return 'danger';
-      default: return 'secondary';
+    if (!position) return 'secondary'; // Gestisce il caso in cui position sia null o undefined
+    
+    // Converti in minuscolo e controlla se contiene "portiere" o inizia con "p"
+    const positionLower = position.toLowerCase();
+    if (positionLower === 'portiere' || positionLower.startsWith('p')) {
+      return 'success'; // Verde per i portieri
     }
+    return 'secondary'; // Grigio per i giocatori di movimento
   };
 
   // Ottieni l'icona in base alla posizione
   const getPositionIcon = (position) => {
-    switch (position) {
-      case 'Portiere': return <FaHandsHelping className="me-1" />;
-      case 'Difensore': return <FaShieldAlt className="me-1" />;
-      case 'Centrocampista': return <FaRunning className="me-1" />;
-      case 'Attaccante': return <FaFutbol className="me-1" />;
-      default: return null;
+    if (!position) return <FaRunning className="me-1" />; // Gestisce il caso in cui position sia null o undefined
+    
+    // Converti in minuscolo e controlla se contiene "portiere" o inizia con "p"
+    const positionLower = position.toLowerCase();
+    if (positionLower === 'portiere' || positionLower.startsWith('p')) {
+      return <FaHandsHelping className="me-1" />; // Icona guantoni per i portieri
     }
+    return <FaRunning className="me-1" />; // Icona omino per giocatori di movimento
   };
 
   return (
@@ -289,7 +304,7 @@ const TeamCreate = () => {
                     onChange={(e) => setTeamName(e.target.value)}
                     placeholder="Inserisci il nome della tua squadra"
                     required
-                    className="bg-dark text-white border-warning"
+                    className="bg-dark text-white border-warning custom-placeholder"
                   />
                 </Form.Group>
                 
@@ -313,7 +328,7 @@ const TeamCreate = () => {
                           <div className="d-flex justify-content-between align-items-center">
                             <div>
                               <Badge bg={getBadgeColor(player.position)} className="me-2">
-                                {getPositionIcon(player.position)} {player.position.charAt(0)}
+                                {getPositionIcon(player.position)}
                               </Badge>
                               <span className="text-white">{player.name}</span>
                             </div>
@@ -378,6 +393,20 @@ const TeamCreate = () => {
                 </InputGroup>
               </Form.Group>
               
+              {/* Filtro per squadra */}
+              <Form.Group className="mb-3 team-filter">
+                <Form.Select
+                  value={teamFilter}
+                  onChange={(e) => setTeamFilter(e.target.value)}
+                  className="bg-dark text-white border-warning"
+                >
+                  <option value="">Tutte le squadre</option>
+                  {getTeams().map(team => (
+                    <option key={team} value={team}>{team}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+              
               <Tabs
                 activeKey={activeTab}
                 onSelect={(k) => setActiveTab(k)}
@@ -396,7 +425,7 @@ const TeamCreate = () => {
                           <div className="d-flex justify-content-between align-items-center">
                             <div>
                               <Badge bg={getBadgeColor(player.position)} className="me-2">
-                                {getPositionIcon(player.position)} {player.position.charAt(0)}
+                                {getPositionIcon(player.position)}
                               </Badge>
                               <span className="text-white">{player.name}</span>
                             </div>
@@ -459,6 +488,20 @@ const TeamCreate = () => {
             </InputGroup>
           </Form.Group>
           
+          {/* Filtro per squadra nell'offcanvas */}
+          <Form.Group className="mb-3 team-filter">
+            <Form.Select
+              value={teamFilter}
+              onChange={(e) => setTeamFilter(e.target.value)}
+              className="bg-dark text-white border-warning"
+            >
+              <option value="">Tutte le squadre</option>
+              {getTeams().map(team => (
+                <option key={team} value={team}>{team}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+          
           <Tabs
             activeKey={activeTab}
             onSelect={(k) => setActiveTab(k)}
@@ -481,7 +524,7 @@ const TeamCreate = () => {
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
                         <Badge bg={getBadgeColor(player.position)} className="me-2">
-                          {getPositionIcon(player.position)} {player.position.charAt(0)}
+                          {getPositionIcon(player.position)}
                         </Badge>
                         <span className="text-white">{player.name}</span>
                       </div>

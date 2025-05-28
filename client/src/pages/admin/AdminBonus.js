@@ -1,33 +1,32 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Card, Button, Form, Alert, ListGroup, Badge, Spinner } from 'react-bootstrap';
 import { FaTrophy, FaFutbol, FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
-import { getMatchdays, getPlayersWithBonuses, updateBonuses, deleteBonus } from '../../services/api';
+import { getMatches, getPlayersWithBonuses, updateBonuses, deleteBonus } from '../../services/api';
 
 const AdminBonus = () => {
-  const [matchdays, setMatchdays] = useState([]);
-  const [selectedMatchday, setSelectedMatchday] = useState(null);
+  const [matches, setMatches] = useState([]);
+  const [selectedMatch, setSelectedMatch] = useState(null);
   const [players, setPlayers] = useState([]);
   const [bonuses, setBonuses] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [editMode, setEditMode] = useState({});
-  const [squadFilter, setSquadFilter] = useState('all');
-  const [squads, setSquads] = useState([]);
+  const [currentMatch, setCurrentMatch] = useState(null);
 
-  // Fetch matchdays when component mounts
+  // Fetch matches when component mounts
   useEffect(() => {
-    fetchMatchdays();
+    fetchMatches();
   }, []);
 
-  const fetchMatchdays = async () => {
+  const fetchMatches = async () => {
     try {
       setLoading(true);
-      const response = await getMatchdays();
-      setMatchdays(response.data);
+      const response = await getMatches();
+      setMatches(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Errore durante il recupero delle giornate');
+      setError('Errore durante il recupero delle partite');
       setLoading(false);
     }
   };
@@ -35,24 +34,22 @@ const AdminBonus = () => {
   const fetchPlayersWithBonuses = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getPlayersWithBonuses(selectedMatchday);
+      
+      // Get the current match details
+      const matchDetails = matches.find(m => m.id === selectedMatch);
+      setCurrentMatch(matchDetails);
+      
+      const response = await getPlayersWithBonuses(selectedMatch);
       setPlayers(response.data);
       
       // Initialize bonuses object and edit mode from response data
       const initialBonuses = {};
       const initialEditMode = {};
       
-      // Extract unique squads from players
-      const uniqueSquads = [...new Set(response.data
-        .map(player => player.squad)
-        .filter(squad => squad))]; // Filter out null/undefined values
-      
-      setSquads(uniqueSquads);
-      
       response.data.forEach(player => {
-        initialBonuses[player.id] = player.matchday_points || 0;
-        // Se il giocatore ha già un bonus per questa giornata, non è in modalità di modifica
-        initialEditMode[player.id] = player.matchday_points === 0 || player.matchday_points === null;
+        initialBonuses[player.id] = player.match_points || 0;
+        // Se il giocatore ha già un bonus per questa partita, non è in modalità di modifica
+        initialEditMode[player.id] = player.match_points === 0 || player.match_points === null;
       });
       setBonuses(initialBonuses);
       setEditMode(initialEditMode);
@@ -63,17 +60,17 @@ const AdminBonus = () => {
       setError('Errore durante il recupero dei giocatori');
       setLoading(false);
     }
-  }, [selectedMatchday]);
+  }, [selectedMatch, matches]);
 
-  // Fetch players with bonuses when a matchday is selected
+  // Fetch players with bonuses when a match is selected
   useEffect(() => {
-    if (selectedMatchday) {
+    if (selectedMatch) {
       fetchPlayersWithBonuses();
     }
-  }, [selectedMatchday, fetchPlayersWithBonuses]);
+  }, [selectedMatch, fetchPlayersWithBonuses]);
 
-  const handleMatchdayChange = (e) => {
-    setSelectedMatchday(parseInt(e.target.value, 10));
+  const handleMatchChange = (e) => {
+    setSelectedMatch(parseInt(e.target.value, 10));
     setSuccess('');
     setError('');
   };
@@ -108,7 +105,7 @@ const AdminBonus = () => {
         }]
       };
       
-      await updateBonuses(selectedMatchday, bonusData);
+      await updateBonuses(selectedMatch, bonusData);
       
       // Disattiva la modalità di modifica dopo il salvataggio
       setEditMode({
@@ -137,7 +134,7 @@ const AdminBonus = () => {
       
       setLoading(true);
       
-      await deleteBonus(selectedMatchday, playerId);
+      await deleteBonus(selectedMatch, playerId);
       
       setSuccess(`Bonus eliminato per il giocatore`);
       setLoading(false);
@@ -176,7 +173,7 @@ const AdminBonus = () => {
         return;
       }
       
-      await updateBonuses(selectedMatchday, bonusData);
+      await updateBonuses(selectedMatch, bonusData);
       
       // Disattiva la modalità di modifica per tutti i giocatori
       const newEditMode = {};
@@ -197,16 +194,7 @@ const AdminBonus = () => {
     }
   };
 
-  const handleSquadFilterChange = (e) => {
-    setSquadFilter(e.target.value);
-  };
-  
-  // Filtra i giocatori in base alla squadra selezionata
-  const filteredPlayers = squadFilter === 'all' 
-    ? players 
-    : players.filter(player => player.squad === squadFilter);
-
-  if (loading && players.length === 0 && !selectedMatchday) {
+  if (loading && players.length === 0 && !selectedMatch) {
     return (
       <Container className="text-center my-5">
         <Spinner animation="border" role="status" variant="warning">
@@ -268,6 +256,14 @@ const AdminBonus = () => {
             padding: 0.4rem 0.5rem;
             border-radius: 0.2rem;
           }
+          .team-header {
+            background-color: rgba(33, 37, 41, 0.8);
+            color: white;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+            border-left: 4px solid rgba(255, 208, 0, 0.8);
+          }
         `}
       </style>
       
@@ -287,18 +283,18 @@ const AdminBonus = () => {
             <Row className="mb-4">
               <Col md={6} className="mx-auto">
                 <Form.Group className="mb-3 text-center">
-                  <Form.Label className="text-warning">Seleziona Giornata</Form.Label>
+                  <Form.Label className="text-warning">Seleziona Partita</Form.Label>
                   <Form.Select 
-                    value={selectedMatchday || ''} 
-                    onChange={handleMatchdayChange}
+                    value={selectedMatch || ''} 
+                    onChange={handleMatchChange}
                     required
                     className="mx-auto"
-                    style={{ maxWidth: '140px' }}
+                    style={{ maxWidth: '240px' }}
                   >
-                    <option value="">Seleziona una giornata</option>
-                    {matchdays.map(matchday => (
-                      <option key={matchday.id} value={matchday.id}>
-                        {matchday.name || `Giornata ${matchday.number}`}
+                    <option value="">Seleziona una partita</option>
+                    {matches.map(match => (
+                      <option key={match.id} value={match.id}>
+                        {match.home_team} - {match.away_team}
                       </option>
                     ))}
                   </Form.Select>
@@ -306,33 +302,12 @@ const AdminBonus = () => {
               </Col>
             </Row>
             
-            {selectedMatchday && (
+            {selectedMatch && currentMatch && (
               <>
                 <h4 className="text-warning mb-3">
                   <FaFutbol className="me-2" />
-                  Bonus Giocatori
+                  {currentMatch.home_team} vs {currentMatch.away_team}
                 </h4>
-                
-                <Row className="mb-4">
-                  <Col md={6} className="mx-auto">
-                    <Form.Group className="mb-3 text-center">
-                      <Form.Label className="text-warning">Filtra per squadra</Form.Label>
-                      <Form.Select 
-                        value={squadFilter} 
-                        onChange={handleSquadFilterChange}
-                        className="mx-auto"
-                        style={{ maxWidth: '180px' }}
-                      >
-                        <option value="all">Tutte le squadre</option>
-                        {squads.map(squad => (
-                          <option key={squad} value={squad}>
-                            {squad}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
                 
                 {loading && (
                   <div className="text-center my-4">
@@ -340,84 +315,166 @@ const AdminBonus = () => {
                   </div>
                 )}
                 
-                <ListGroup className="mb-4">
-                  {filteredPlayers.map(player => (
-                    <ListGroup.Item key={player.id} className="bonus-list-item d-flex justify-content-between align-items-center">
-                      <div className="text-start" style={{ minWidth: '150px' }}>
-                        <div className="text-warning">{player.name}</div>
-                        {player.squad && (
-                          <div>
-                            <Badge bg="secondary" className="mt-1">
-                              {player.squad}
-                            </Badge>
-                          </div>
-                        )}
-                      </div>
-                      <div className="d-flex align-items-center">
-                        {editMode[player.id] ? (
-                          // Modalità di modifica
-                          <>
-                            <Form.Group className="mb-0 me-2" style={{ width: '100px' }}>
-                              <Form.Control
-                                type="number"
-                                value={bonuses[player.id] || 0}
-                                onChange={(e) => handleBonusChange(player.id, e.target.value)}
-                                min="-10"
-                                max="10"
-                              />
-                            </Form.Group>
-                            <Button 
-                              variant="warning" 
-                              size="sm"
-                              className="me-2 d-flex align-items-center justify-content-center"
-                              onClick={() => savePlayerBonus(player.id)}
-                              disabled={loading}
-                              style={{ width: '38px', height: '38px', padding: '0' }}
-                            >
-                              <FaSave />
-                            </Button>
-                            <Button 
-                              variant="outline-secondary" 
-                              size="sm"
-                              className="d-flex align-items-center justify-content-center"
-                              onClick={() => toggleEditMode(player.id)}
-                              disabled={loading}
-                              style={{ width: '38px', height: '38px', padding: '0' }}
-                            >
-                              <FaTimes />
-                            </Button>
-                          </>
-                        ) : (
-                          // Modalità di visualizzazione
-                          <>
-                            <span className="me-3 badge bonus-badge px-3 py-2">{player.matchday_points || 0} pt</span>
-                            <Button 
-                              variant="outline-warning" 
-                              size="sm"
-                              className="me-2 d-flex align-items-center justify-content-center"
-                              onClick={() => toggleEditMode(player.id)}
-                              disabled={loading}
-                              style={{ width: '38px', height: '38px', padding: '0' }}
-                            >
-                              <FaEdit />
-                            </Button>
-                            {player.matchday_points > 0 && (
-                              <Button 
-                                variant="outline-danger" 
-                                size="sm"
-                                className="d-flex align-items-center justify-content-center"
-                                onClick={() => handleDeleteBonus(player.id)}
-                                disabled={loading}
-                              >
-                                <FaTrash />
-                              </Button>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
+                {/* Dividi i giocatori per squadra */}
+                {!loading && players.length > 0 && (
+                  <>
+                    {/* Squadra di casa */}
+                    <div className="team-header">
+                      <h5 className="mb-0">{currentMatch.home_team}</h5>
+                    </div>
+                    <ListGroup className="mb-4">
+                      {players
+                        .filter(player => player.squad === currentMatch.home_team)
+                        .map(player => (
+                          <ListGroup.Item key={player.id} className="bonus-list-item d-flex justify-content-between align-items-center">
+                            <div className="text-start" style={{ minWidth: '150px' }}>
+                              <div className="text-warning">{player.name}</div>
+                            </div>
+                            <div className="d-flex align-items-center">
+                              {editMode[player.id] ? (
+                                // Modalità di modifica
+                                <>
+                                  <Form.Group className="mb-0 me-2" style={{ width: '100px' }}>
+                                    <Form.Control
+                                      type="number"
+                                      value={bonuses[player.id] || 0}
+                                      onChange={(e) => handleBonusChange(player.id, e.target.value)}
+                                      min="-10"
+                                      max="10"
+                                    />
+                                  </Form.Group>
+                                  <Button 
+                                    variant="warning" 
+                                    size="sm"
+                                    className="me-2 d-flex align-items-center justify-content-center"
+                                    onClick={() => savePlayerBonus(player.id)}
+                                    disabled={loading}
+                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                  >
+                                    <FaSave />
+                                  </Button>
+                                  <Button 
+                                    variant="outline-secondary" 
+                                    size="sm"
+                                    className="d-flex align-items-center justify-content-center"
+                                    onClick={() => toggleEditMode(player.id)}
+                                    disabled={loading}
+                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                  >
+                                    <FaTimes />
+                                  </Button>
+                                </>
+                              ) : (
+                                // Modalità di visualizzazione
+                                <>
+                                  <span className="me-3 badge bonus-badge px-3 py-2">{player.match_points || 0} pt</span>
+                                  <Button 
+                                    variant="outline-warning" 
+                                    size="sm"
+                                    className="me-2 d-flex align-items-center justify-content-center"
+                                    onClick={() => toggleEditMode(player.id)}
+                                    disabled={loading}
+                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                  >
+                                    <FaEdit />
+                                  </Button>
+                                  {player.match_points > 0 && (
+                                    <Button 
+                                      variant="outline-danger" 
+                                      size="sm"
+                                      className="d-flex align-items-center justify-content-center"
+                                      onClick={() => handleDeleteBonus(player.id)}
+                                      disabled={loading}
+                                    >
+                                      <FaTrash />
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                    
+                    {/* Squadra ospite */}
+                    <div className="team-header">
+                      <h5 className="mb-0">{currentMatch.away_team}</h5>
+                    </div>
+                    <ListGroup className="mb-4">
+                      {players
+                        .filter(player => player.squad === currentMatch.away_team)
+                        .map(player => (
+                          <ListGroup.Item key={player.id} className="bonus-list-item d-flex justify-content-between align-items-center">
+                            <div className="text-start" style={{ minWidth: '150px' }}>
+                              <div className="text-warning">{player.name}</div>
+                            </div>
+                            <div className="d-flex align-items-center">
+                              {editMode[player.id] ? (
+                                // Modalità di modifica
+                                <>
+                                  <Form.Group className="mb-0 me-2" style={{ width: '100px' }}>
+                                    <Form.Control
+                                      type="number"
+                                      value={bonuses[player.id] || 0}
+                                      onChange={(e) => handleBonusChange(player.id, e.target.value)}
+                                      min="-10"
+                                      max="10"
+                                    />
+                                  </Form.Group>
+                                  <Button 
+                                    variant="warning" 
+                                    size="sm"
+                                    className="me-2 d-flex align-items-center justify-content-center"
+                                    onClick={() => savePlayerBonus(player.id)}
+                                    disabled={loading}
+                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                  >
+                                    <FaSave />
+                                  </Button>
+                                  <Button 
+                                    variant="outline-secondary" 
+                                    size="sm"
+                                    className="d-flex align-items-center justify-content-center"
+                                    onClick={() => toggleEditMode(player.id)}
+                                    disabled={loading}
+                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                  >
+                                    <FaTimes />
+                                  </Button>
+                                </>
+                              ) : (
+                                // Modalità di visualizzazione
+                                <>
+                                  <span className="me-3 badge bonus-badge px-3 py-2">{player.match_points || 0} pt</span>
+                                  <Button 
+                                    variant="outline-warning" 
+                                    size="sm"
+                                    className="me-2 d-flex align-items-center justify-content-center"
+                                    onClick={() => toggleEditMode(player.id)}
+                                    disabled={loading}
+                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                  >
+                                    <FaEdit />
+                                  </Button>
+                                  {player.match_points > 0 && (
+                                    <Button 
+                                      variant="outline-danger" 
+                                      size="sm"
+                                      className="d-flex align-items-center justify-content-center"
+                                      onClick={() => handleDeleteBonus(player.id)}
+                                      disabled={loading}
+                                    >
+                                      <FaTrash />
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                  </>
+                )}
                 
                 {Object.values(editMode).some(v => v) && (
                   <div className="text-center">
