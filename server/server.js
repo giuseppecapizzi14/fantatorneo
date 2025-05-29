@@ -47,6 +47,8 @@ app.use('/api/players', require('./routes/players'));
 app.use('/api/bonus', require('./routes/bonus'));
 // Leaderboard routes
 app.use('/api/leaderboard', require('./routes/leaderboard'));
+// Calendar routes
+app.use('/api/calendar', require('./routes/calendar'));
 
 // Try to start the server with error handling for port conflicts
 const startServer = (port) => {

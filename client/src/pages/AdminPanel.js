@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FaUsers, FaFutbol, FaTrophy, FaStar } from 'react-icons/fa';
+import { FaUsers, FaTrophy, FaStar, FaClipboardList } from 'react-icons/fa';
 
 const AdminPanel = () => {
   // Array of admin options
@@ -25,6 +25,13 @@ const AdminPanel = () => {
       path: '/admin/bonus',
       icon: <FaStar size={40} />,
       description: 'Gestisci i bonus e i punteggi'
+    },
+    
+    {
+      title: 'Gestione Risultati',
+      path: '/admin/results',
+      icon: <FaClipboardList size={40} />,
+      description: 'Inserisci i risultati delle partite'
     },
   ];
 

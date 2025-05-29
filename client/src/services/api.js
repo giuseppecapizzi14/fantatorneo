@@ -216,4 +216,22 @@ export const getDetailedLeaderboard = () => {
   return api.get('/leaderboard/detailed');
 };
 
+// Calendar services (public)
+export const getCalendarMatches = () => {
+  return api.get('/calendar/matches');
+};
+
+// Admin calendar services
+export const createCalendarMatch = (matchData) => {
+  return api.post('/calendar/matches', matchData);
+};
+
+export const updateCalendarMatch = (id, matchData) => {
+  return api.put(`/calendar/matches/${id}`, matchData);
+};
+
+export const deleteCalendarMatch = (id) => {
+  return api.delete(`/calendar/matches/${id}`);
+};
+
 export default api;

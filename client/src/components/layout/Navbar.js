@@ -13,6 +13,15 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
     navigate('/');
   };
 
+  const handleTitleClick = () => {
+    closeNavbar();
+    if (isAuthenticated) {
+      navigate('/home');
+    } else {
+      navigate('/');
+    }
+  };
+
   const closeNavbar = () => setExpanded(false);
   
   return (
@@ -28,7 +37,10 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
       }}
     >
       <Container>
-        <BootstrapNavbar.Brand as={Link} to="/home" onClick={closeNavbar}>
+        <BootstrapNavbar.Brand 
+          onClick={handleTitleClick}
+          style={{ cursor: 'pointer' }}
+        >
           <img
             src="/soccer-player.png"
             width="30"
@@ -45,6 +57,17 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
         />
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto desktop-nav">
+            {/* Link sempre visibile per Calendario e Risultati */}
+            <Nav.Link 
+              as={Link} 
+              to="/calendar" 
+              onClick={closeNavbar}
+              className="text-white text-uppercase nav-item"
+              style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+            >
+              Calendario & Risultati
+            </Nav.Link>
+            
             {isAuthenticated ? (
               <>
                 <Nav.Link 
