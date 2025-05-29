@@ -164,14 +164,51 @@ const CalendarResults = () => {
             font-family: 'Montserrat', sans-serif !important;
           }
           
+          .calendar-card {
+            margin-bottom: 1rem !important;
+          }
+          
+          .calendar-card .card-body {
+            padding: 0.5rem !important;
+          }
+          
+          .match-row {
+            padding: 0.75rem !important;
+            min-height: auto !important;
+          }
+          
           @media (max-width: 768px) {
             .time-group {
-              min-width: 80px !important;
+              min-width: 60px !important;
               flex-shrink: 0 !important;
             }
             .match-content {
               flex: 1 !important;
               justify-content: center !important;
+              max-width: 280px !important;
+            }
+            .calendar-card {
+              margin-bottom: 0.75rem !important;
+              margin-left: 0.5rem !important;
+              margin-right: 0.5rem !important;
+            }
+            .match-row {
+              padding: 0.5rem !important;
+              font-size: 0.85rem !important;
+            }
+            .team-display {
+              min-width: 80px !important;
+            }
+            .team-name {
+              font-size: 0.8rem !important;
+              max-width: 70px !important;
+            }
+            .score-badge {
+              font-size: 0.8rem !important;
+              padding: 0.3rem 0.6rem !important;
+            }
+            .vs-text {
+              font-size: 0.9rem !important;
             }
           }
         `}
@@ -199,13 +236,13 @@ const CalendarResults = () => {
               Object.entries(groupedMatches).map(([dateKey, dayMatches]) => (
                 <Card 
                   key={dateKey}
-                  className="mb-4 shadow"
+                  className="calendar-card shadow"
                   style={{
                     backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '15px',
-                    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.25)'
                   }}
                 >
                   <Card.Header 
@@ -213,14 +250,15 @@ const CalendarResults = () => {
                     style={{
                       backgroundColor: 'rgba(255, 208, 0, 0.2)',
                       border: 'none',
-                      borderRadius: '15px 15px 0 0'
+                      borderRadius: '12px 12px 0 0',
+                      padding: '0.75rem'
                     }}
                   >
                     <h6 className="mb-0" style={{ 
                       color: 'white', 
                       textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
                       fontWeight: 'bold',
-                      fontSize: '1rem'
+                      fontSize: '0.95rem'
                     }}>
                       {dateKey !== 'no-date' ? formatDate(dayMatches[0].match_date) : 'Data da definire'}
                     </h6>
@@ -230,38 +268,66 @@ const CalendarResults = () => {
                     {dayMatches.map((match, index) => (
                       <div 
                         key={match.id}
-                        className="d-flex align-items-center p-3"
+                        className="d-flex align-items-center match-row"
                         style={{
                           borderBottom: index < dayMatches.length - 1 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
                           color: 'white'
                         }}
                       >
-                        <div className="d-flex align-items-center time-group" style={{ minWidth: '200px' }}>
+                        <div className="d-flex align-items-center time-group" style={{ minWidth: '120px' }}>
                           <div className="d-flex align-items-center">
-                            <FaClock className="me-1" size={14} style={{ color: 'rgb(255, 208, 0)' }} />
-                            <span style={{ fontSize: '0.9rem', textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
-                              {formatTime(match.match_date) || 'Orario TBD'}
+                            <FaClock className="me-1" size={12} style={{ color: 'rgb(255, 208, 0)' }} />
+                            <span style={{ fontSize: '0.8rem', textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+                              {formatTime(match.match_date) || 'TBD'}
                             </span>
                           </div>
                         </div>
                         
                         <div className="d-flex align-items-center justify-content-between match-content" style={{ 
                           flex: '1',
-                          maxWidth: '400px',
+                          maxWidth: '350px',
                           margin: '0 auto'
                         }}>
-                          <div style={{ flex: '1', textAlign: 'right', paddingRight: '15px' }}>
-                            <TeamDisplay teamName={match.home_team} isHome={true} />
+                          <div style={{ flex: '1', textAlign: 'right', paddingRight: '10px' }}>
+                            <div className="d-flex align-items-center team-display" style={{ 
+                              minWidth: '100px',
+                              justifyContent: 'flex-end',
+                              whiteSpace: 'nowrap'
+                            }}>
+                              <img 
+                                src={getTeamLogo(match.home_team)} 
+                                alt={`${match.home_team} logo`}
+                                style={{
+                                  width: '18px',
+                                  height: '18px',
+                                  marginRight: '5px',
+                                  objectFit: 'contain',
+                                  flexShrink: 0
+                                }}
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                              <span className="team-name" style={{ 
+                                fontSize: '0.85rem', 
+                                fontWeight: 'normal',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '80px'
+                              }}>{match.home_team}</span>
+                            </div>
                           </div>
                           
-                          <div className="d-flex align-items-center justify-content-center" style={{ minWidth: '80px' }}>
+                          <div className="d-flex align-items-center justify-content-center" style={{ minWidth: '60px' }}>
                             {match.home_score !== null && match.away_score !== null ? (
                               <Badge 
+                                className="score-badge"
                                 style={{
-                                  backgroundColor: 'yellow',
+                                  backgroundColor: '#ffc107',
                                   color: 'white',
-                                  fontSize: '0.9rem',
-                                  padding: '0.4rem 0.8rem',
+                                  fontSize: '0.8rem',
+                                  padding: '0.3rem 0.6rem',
                                   fontWeight: 'bold',
                                   border: 'none'
                                 }}
@@ -269,9 +335,9 @@ const CalendarResults = () => {
                                 {match.home_score} - {match.away_score}
                               </Badge>
                             ) : (
-                              <span style={{ 
+                              <span className="vs-text" style={{ 
                                 color: 'rgb(255, 208, 0)',
-                                fontSize: '1rem',
+                                fontSize: '0.9rem',
                                 fontWeight: 'normal',
                                 textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
                               }}>
@@ -280,8 +346,35 @@ const CalendarResults = () => {
                             )}
                           </div>
                           
-                          <div style={{ flex: '1', textAlign: 'left', paddingLeft: '15px' }}>
-                            <TeamDisplay teamName={match.away_team} isHome={false} />
+                          <div style={{ flex: '1', textAlign: 'left', paddingLeft: '10px' }}>
+                            <div className="d-flex align-items-center team-display" style={{ 
+                              minWidth: '100px',
+                              justifyContent: 'flex-start',
+                              whiteSpace: 'nowrap'
+                            }}>
+                              <span className="team-name" style={{ 
+                                fontSize: '0.85rem', 
+                                fontWeight: 'normal',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '80px'
+                              }}>{match.away_team}</span>
+                              <img 
+                                src={getTeamLogo(match.away_team)} 
+                                alt={`${match.away_team} logo`}
+                                style={{
+                                  width: '18px',
+                                  height: '18px',
+                                  marginLeft: '5px',
+                                  objectFit: 'contain',
+                                  flexShrink: 0
+                                }}
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
