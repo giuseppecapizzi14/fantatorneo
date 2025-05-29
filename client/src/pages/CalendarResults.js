@@ -31,9 +31,9 @@ const CalendarResults = () => {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      timeZone: 'Europe/Rome' // ← AGGIUNTO: forza timezone italiano
     });
-    // Capitalizza la prima lettera di ogni parola (giorno e mese)
     return formattedDate.replace(/\b\w/g, l => l.toUpperCase());
   };
 
@@ -42,7 +42,8 @@ const CalendarResults = () => {
     const date = new Date(dateString);
     return date.toLocaleTimeString('it-IT', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'Europe/Rome' // ← AGGIUNTO: forza timezone italiano
     });
   };
 
