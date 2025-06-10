@@ -134,7 +134,7 @@ function App() {
             } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Dashboard user={user} />
               </ProtectedRoute>
             } />
             <Route path="/create-team" element={

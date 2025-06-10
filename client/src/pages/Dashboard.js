@@ -12,9 +12,13 @@ const Dashboard = ({ user }) => {
   useEffect(() => {
     const fetchUserTeam = async () => {
       try {
+        console.log('Fetching team for user:', user.id); // ← AGGIUNTO
         const res = await getUserTeam(user.id);
+        console.log('Team data received:', res.data); // ← AGGIUNTO
         setTeam(res.data);
       } catch (err) {
+        console.error('Error fetching team:', err); // ← AGGIUNTO
+        console.error('Error response:', err.response); // ← AGGIUNTO
         if (err.response?.status !== 404) {
           setError('Errore nel caricamento della squadra');
         }
@@ -24,7 +28,11 @@ const Dashboard = ({ user }) => {
     };
 
     if (user) {
+      console.log('User object:', user); // ← AGGIUNTO
       fetchUserTeam();
+    } else {
+      console.log('No user found'); // ← AGGIUNTO
+      setLoading(false); // ← AGGIUNTO: importante!
     }
   }, [user]);
 

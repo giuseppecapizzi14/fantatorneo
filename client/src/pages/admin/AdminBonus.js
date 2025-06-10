@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, Row, Col, Card, Button, Form, Alert, ListGroup, Badge, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Form, Alert, ListGroup, Spinner } from 'react-bootstrap';
 import { FaTrophy, FaFutbol, FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
 import { getMatches, getPlayersWithBonuses, updateBonuses, deleteBonus } from '../../services/api';
 
@@ -79,7 +79,7 @@ const AdminBonus = () => {
   const handleBonusChange = (playerId, value) => {
     setBonuses({
       ...bonuses,
-      [playerId]: parseInt(value) || 0
+      [playerId]: parseFloat(value) || 0
     });
   };
 
@@ -263,6 +263,11 @@ const AdminBonus = () => {
             margin-bottom: 1rem;
             border-radius: 0.25rem;
             border-left: 4px solid rgba(255, 208, 0, 0.8);
+
+            .decimal-input::placeholder {
+            color: #6c757d !important;
+            opacity: 0.5 !important;
+            }
           }
         `}
       </style>
@@ -334,24 +339,31 @@ const AdminBonus = () => {
                               {editMode[player.id] ? (
                                 // Modalità di modifica
                                 <>
-                                  <Form.Group className="mb-0 me-2" style={{ width: '100px' }}>
+                                  <div className="d-flex align-items-center me-2" style={{ width: '60px' }}>
                                     <Form.Control
                                       type="number"
-                                      value={bonuses[player.id] || 0}
+                                      value={bonuses[player.id] === 0 ? '' : bonuses[player.id]}
                                       onChange={(e) => handleBonusChange(player.id, e.target.value)}
                                       min="-10"
                                       max="10"
+                                      placeholder="0"
+                                      style={{ 
+                                        width: '60px', 
+                                        fontSize: '0.9rem',
+                                        padding: '0.25rem 0.5rem'
+                                      }}
+                                      className="decimal-input"
                                     />
-                                  </Form.Group>
+                                  </div>
                                   <Button 
                                     variant="warning" 
                                     size="sm"
-                                    className="me-2 d-flex align-items-center justify-content-center"
+                                    className="me-1 d-flex align-items-center justify-content-center"
                                     onClick={() => savePlayerBonus(player.id)}
                                     disabled={loading}
-                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                    style={{ width: '32px', height: '32px', padding: '0' }}
                                   >
-                                    <FaSave />
+                                    <FaSave style={{ fontSize: '12px' }} />
                                   </Button>
                                   <Button 
                                     variant="outline-secondary" 
@@ -359,9 +371,9 @@ const AdminBonus = () => {
                                     className="d-flex align-items-center justify-content-center"
                                     onClick={() => toggleEditMode(player.id)}
                                     disabled={loading}
-                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                    style={{ width: '32px', height: '32px', padding: '0' }}
                                   >
-                                    <FaTimes />
+                                    <FaTimes style={{ fontSize: '12px' }} />
                                   </Button>
                                 </>
                               ) : (
@@ -497,5 +509,6 @@ const AdminBonus = () => {
     </Container>
   );
 };
+
 
 export default AdminBonus;
