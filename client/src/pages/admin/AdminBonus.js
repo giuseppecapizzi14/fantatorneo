@@ -424,24 +424,31 @@ const AdminBonus = () => {
                               {editMode[player.id] ? (
                                 // Modalità di modifica
                                 <>
-                                  <Form.Group className="mb-0 me-2" style={{ width: '100px' }}>
+                                  <div className="d-flex align-items-center me-2" style={{ width: '60px' }}>
                                     <Form.Control
                                       type="number"
-                                      value={bonuses[player.id] || 0}
+                                      value={bonuses[player.id] === 0 ? '' : bonuses[player.id]}
                                       onChange={(e) => handleBonusChange(player.id, e.target.value)}
                                       min="-10"
                                       max="10"
+                                      placeholder="0"
+                                      style={{ 
+                                        width: '60px', 
+                                        fontSize: '0.9rem',
+                                        padding: '0.25rem 0.5rem'
+                                      }}
+                                      className="decimal-input"
                                     />
-                                  </Form.Group>
+                                  </div>
                                   <Button 
                                     variant="warning" 
                                     size="sm"
-                                    className="me-2 d-flex align-items-center justify-content-center"
+                                    className="me-1 d-flex align-items-center justify-content-center"
                                     onClick={() => savePlayerBonus(player.id)}
                                     disabled={loading}
-                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                    style={{ width: '32px', height: '32px', padding: '0' }}
                                   >
-                                    <FaSave />
+                                    <FaSave style={{ fontSize: '12px' }} />
                                   </Button>
                                   <Button 
                                     variant="outline-secondary" 
@@ -449,7 +456,7 @@ const AdminBonus = () => {
                                     className="d-flex align-items-center justify-content-center"
                                     onClick={() => toggleEditMode(player.id)}
                                     disabled={loading}
-                                    style={{ width: '38px', height: '38px', padding: '0' }}
+                                    style={{ width: '32px', height: '32px', padding: '0' }}
                                   >
                                     <FaTimes />
                                   </Button>
