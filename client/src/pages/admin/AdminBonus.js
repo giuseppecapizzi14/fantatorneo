@@ -344,8 +344,8 @@ const AdminBonus = () => {
                                       type="number"
                                       value={bonuses[player.id] === 0 ? '' : bonuses[player.id]}
                                       onChange={(e) => handleBonusChange(player.id, e.target.value)}
-                                      min="-10"
-                                      max="10"
+                                      min="-100"
+                                      max="100"
                                       placeholder="0"
                                       style={{ 
                                         width: '60px', 
@@ -429,8 +429,8 @@ const AdminBonus = () => {
                                       type="number"
                                       value={bonuses[player.id] === 0 ? '' : bonuses[player.id]}
                                       onChange={(e) => handleBonusChange(player.id, e.target.value)}
-                                      min="-10"
-                                      max="10"
+                                      min="-100"
+                                      max="100"
                                       placeholder="0"
                                       style={{ 
                                         width: '60px', 
