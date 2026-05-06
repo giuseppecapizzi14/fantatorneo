@@ -9,10 +9,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+const defaultCorsOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://fantamazzarinosummercup.fun']
+  : ['http://localhost:3000'];
+
+const corsOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://fantamazzarinosummercup.fun'] 
-    : 'http://localhost:3000',
+  origin: corsOrigins.length > 0 ? corsOrigins : defaultCorsOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
 }));
