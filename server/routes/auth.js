@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('../lib/bcrypt');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 

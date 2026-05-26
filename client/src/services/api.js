@@ -5,7 +5,7 @@ import axios from 'axios';
 export const API_URL = process.env.REACT_APP_API_URL || (
   process.env.NODE_ENV === 'production'
     ? 'https://fantatorneo-backend.onrender.com/api'
-    : 'http://localhost:5001/api'
+    : 'http://localhost:5000/api'
 );
 
 // Create axios instance
