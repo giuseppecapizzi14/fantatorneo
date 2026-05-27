@@ -29,8 +29,21 @@ router.get('/transactions', [auth, admin], async (req, res) => {
   try {
     const limit = Math.max(1, Math.min(500, parseInt(req.query.limit, 10) || 200));
     const result = await pool.query(
-      `SELECT id, kind, amount_cents, currency, occurred_at, source_name, holder_name, spent_by, description, created_by_user_id, created_at
-       FROM finance_transactions
+      `SELECT
+         ft.id,
+         ft.kind,
+         ft.amount_cents,
+         ft.currency,
+         ft.occurred_at,
+         ft.source_name,
+         ft.holder_name,
+         ft.spent_by,
+         ft.description,
+         ft.created_by_user_id,
+         u.username AS created_by_username,
+         ft.created_at
+       FROM finance_transactions ft
+       LEFT JOIN users u ON u.id = ft.created_by_user_id
        ORDER BY occurred_at DESC, id DESC
        LIMIT $1`,
       [limit]
@@ -115,10 +128,17 @@ router.post('/transactions', [auth, admin], async (req, res) => {
     }
 
     const result = await pool.query(
-      `INSERT INTO finance_transactions
-        (kind, amount_cents, currency, occurred_at, source_name, holder_name, spent_by, description, created_by_user_id)
-       VALUES ($1, $2, $3, COALESCE($4, NOW()), $5, $6, $7, $8, $9)
-       RETURNING id, kind, amount_cents, currency, occurred_at, source_name, holder_name, spent_by, description, created_by_user_id, created_at`,
+      `WITH inserted AS (
+         INSERT INTO finance_transactions
+           (kind, amount_cents, currency, occurred_at, source_name, holder_name, spent_by, description, created_by_user_id)
+         VALUES ($1, $2, $3, COALESCE($4, NOW()), $5, $6, $7, $8, $9)
+         RETURNING id, kind, amount_cents, currency, occurred_at, source_name, holder_name, spent_by, description, created_by_user_id, created_at
+       )
+       SELECT
+         i.*,
+         u.username AS created_by_username
+       FROM inserted i
+       LEFT JOIN users u ON u.id = i.created_by_user_id`,
       [
         kind,
         amountCents,

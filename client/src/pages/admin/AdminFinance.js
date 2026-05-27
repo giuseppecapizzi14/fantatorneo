@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Container, Row, Col, Card, Alert, Form, Button, Table, Badge, Spinner } from 'react-bootstrap';
-import { FaArrowDown, FaArrowUp, FaChartPie, FaMoneyBillWave, FaTrash } from 'react-icons/fa';
+import { Container, Row, Col, Card, Alert, Form, Button, Badge, Spinner, Modal } from 'react-bootstrap';
+import { FaArrowDown, FaArrowUp, FaChartPie, FaMoneyBillWave, FaPlus, FaTrash } from 'react-icons/fa';
 import api from '../../services/api';
 
 const formatCents = (cents) => {
@@ -14,6 +14,10 @@ const AdminFinance = () => {
   const [error, setError] = useState('');
   const [summary, setSummary] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [adminUsers, setAdminUsers] = useState([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState('income');
 
   const [form, setForm] = useState({
     kind: 'SPONSOR',
@@ -44,6 +48,10 @@ const AdminFinance = () => {
       ]);
       setSummary(s.data);
       setTransactions(t.data || []);
+
+      const users = await api.get('/users');
+      const admins = (users.data || []).filter((u) => u.role === 'admin');
+      setAdminUsers(admins);
     } catch (e) {
       setError('Errore nel caricamento della gestione spese');
     } finally {
@@ -75,13 +83,8 @@ const AdminFinance = () => {
       };
 
       await api.post('/finance/transactions', body);
-      setForm((prev) => ({
-        ...prev,
-        amount: '',
-        source_name: '',
-        description: '',
-        spent_by: prev.kind === 'EXPENSE' ? prev.spent_by : ''
-      }));
+      setShowModal(false);
+      setForm((prev) => ({ ...prev, amount: '', source_name: '', description: '', occurred_at: '' }));
       await loadAll();
     } catch (e2) {
       setError('Errore durante il salvataggio');
@@ -130,6 +133,58 @@ const AdminFinance = () => {
     );
   }, [income, expense, net, maxAbs]);
 
+  const openIncome = () => {
+    setModalMode('income');
+    setForm({
+      kind: 'SPONSOR',
+      amount: '',
+      occurred_at: '',
+      source_name: '',
+      holder_name: adminUsers[0]?.username || '',
+      spent_by: '',
+      description: ''
+    });
+    setShowModal(true);
+  };
+
+  const openExpense = () => {
+    setModalMode('expense');
+    setForm({
+      kind: 'EXPENSE',
+      amount: '',
+      occurred_at: '',
+      source_name: '',
+      holder_name: adminUsers[0]?.username || '',
+      spent_by: '',
+      description: ''
+    });
+    setShowModal(true);
+  };
+
+  const closeModal = () => setShowModal(false);
+
+  const txAmountLabel = (t) => {
+    const sign = t.kind === 'EXPENSE' ? '-' : '+';
+    return `${sign}${formatCents(t.amount_cents)}`;
+  };
+
+  const txTitle = (t) => {
+    if (t.kind === 'EXPENSE') return t.description || 'Spesa';
+    if (t.kind === 'REGISTRATION') return t.source_name || 'Iscrizione';
+    return t.source_name || 'Sponsor';
+  };
+
+  const txSubtitle = (t) => {
+    const parts = [];
+    if (t.kind === 'SPONSOR') parts.push('Sponsor');
+    if (t.kind === 'REGISTRATION') parts.push('Iscrizione');
+    if (t.kind === 'EXPENSE' && t.spent_by) parts.push(`Spesa da: ${t.spent_by}`);
+    if (t.description && t.kind !== 'EXPENSE') parts.push(t.description);
+    if (t.holder_name) parts.push(`Cassa: ${t.holder_name}`);
+    if (t.occurred_at) parts.push(new Date(t.occurred_at).toLocaleDateString('it-IT'));
+    return parts.filter(Boolean).join(' • ');
+  };
+
   if (loading) {
     return (
       <Container className="text-center my-5">
@@ -149,183 +204,165 @@ const AdminFinance = () => {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      <Row className="g-3">
-        <Col lg={5}>
-          <Card className="admin-card app-card">
-            <Card.Body>
-              <div className="d-flex align-items-center justify-content-between mb-3">
-                <div className="d-flex align-items-center gap-2">
-                  <FaChartPie className="text-warning" />
-                  <span className="app-title">Riepilogo</span>
-                </div>
-                <Badge bg="warning" className="text-dark app-badge">{formatCents(net)}</Badge>
-              </div>
+      <Card className="admin-card app-card">
+        <Card.Body>
+          <div className="d-flex align-items-center justify-content-between mb-3">
+            <div className="d-flex align-items-center gap-2">
+              <FaChartPie className="text-warning" />
+              <span className="app-title">Riepilogo</span>
+            </div>
+            <Badge bg="warning" className="text-dark app-badge">{formatCents(net)}</Badge>
+          </div>
 
-              <div className="mb-3">{chart}</div>
+          <div className="mb-3">{chart}</div>
 
-              <div className="d-flex align-items-center justify-content-between">
-                <div className="app-muted">Entrate</div>
-                <div className="fw-semibold">{formatCents(income)}</div>
-              </div>
-              <div className="d-flex align-items-center justify-content-between">
-                <div className="app-muted">Spese</div>
-                <div className="fw-semibold">{formatCents(expense)}</div>
-              </div>
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="app-muted">Entrate</div>
+            <div className="fw-semibold">{formatCents(income)}</div>
+          </div>
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="app-muted">Spese</div>
+            <div className="fw-semibold">{formatCents(expense)}</div>
+          </div>
 
-              <div className="mt-3">
-                <div className="app-title mb-2">Saldo per cassa</div>
-                <div className="finance-holder-list">
-                  {(summary?.by_holder || []).map((h) => (
-                    <div key={h.holder_name} className="finance-holder-row">
-                      <div className="finance-holder-name">{h.holder_name}</div>
-                      <div className="finance-holder-value">{formatCents(h.net_cents)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+          <div className="finance-actions mt-3">
+            <Button variant="warning" className="finance-action-btn" onClick={openIncome}>
+              <FaPlus className="me-2" />
+              Aggiungi Entrata
+            </Button>
+            <Button variant="outline-light" className="finance-action-btn finance-action-btn--danger" onClick={openExpense}>
+              <FaPlus className="me-2" />
+              Aggiungi Uscita
+            </Button>
+          </div>
 
-        <Col lg={7}>
-          <Card className="admin-card app-card">
-            <Card.Body>
-              <div className="app-title mb-3">Nuova registrazione</div>
+          <div className="finance-movements mt-3">
+            <div className="finance-movements-header">
+              <div className="app-title">Movimenti</div>
+              <Badge bg="secondary" className="app-badge">{transactions.length}</Badge>
+            </div>
 
-              <Form onSubmit={submit}>
-                <Row className="g-2">
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label>Tipo</Form.Label>
-                      <Form.Select value={form.kind} onChange={onChange('kind')}>
-                        <option value="SPONSOR">Sponsor (entrata)</option>
-                        <option value="REGISTRATION">Iscrizione (entrata)</option>
-                        <option value="EXPENSE">Spesa (uscita)</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label>Importo (€)</Form.Label>
-                      <Form.Control value={form.amount} onChange={onChange('amount')} placeholder="Es. 50 oppure 50,00" />
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label>Chi lo tiene</Form.Label>
-                      <Form.Control value={form.holder_name} onChange={onChange('holder_name')} placeholder="Es. Giuseppe" />
-                    </Form.Group>
-                  </Col>
-
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label>Data/Ora</Form.Label>
-                      <Form.Control type="datetime-local" value={form.occurred_at} onChange={onChange('occurred_at')} />
-                    </Form.Group>
-                  </Col>
-
-                  {form.kind !== 'EXPENSE' ? (
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>{form.kind === 'SPONSOR' ? 'Sponsor' : 'Squadra'}</Form.Label>
-                        <Form.Control value={form.source_name} onChange={onChange('source_name')} placeholder={form.kind === 'SPONSOR' ? 'Es. Bar Centrale' : 'Es. Torino'} />
-                      </Form.Group>
-                    </Col>
-                  ) : (
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Chi ha speso</Form.Label>
-                        <Form.Control value={form.spent_by} onChange={onChange('spent_by')} placeholder="Es. Giuseppe" />
-                      </Form.Group>
-                    </Col>
-                  )}
-
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label>Descrizione</Form.Label>
-                      <Form.Control value={form.description} onChange={onChange('description')} placeholder="Es. Stampa locandine" />
-                    </Form.Group>
-                  </Col>
-
-                  <Col xs={12} className="mt-2">
-                    <Button type="submit" variant="warning" className="w-100" disabled={submitting}>
-                      {submitting ? 'Salvataggio...' : 'Aggiungi'}
+            <div className="finance-movements-list">
+              {transactions.map((t) => (
+                <div key={t.id} className="finance-movement-row">
+                  <div className="finance-movement-icon">
+                    {t.kind === 'EXPENSE' ? <FaArrowDown className="text-danger" /> : <FaArrowUp className="text-success" />}
+                  </div>
+                  <div className="finance-movement-main">
+                    <div className="finance-movement-title">{txTitle(t)}</div>
+                    <div className="finance-movement-sub app-dim">{txSubtitle(t)}</div>
+                  </div>
+                  <div className="finance-movement-amount">
+                    <span className={t.kind === 'EXPENSE' ? 'badge bg-danger app-badge' : 'badge bg-warning text-dark app-badge'}>
+                      {txAmountLabel(t)}
+                    </span>
+                  </div>
+                  <div className="finance-movement-user app-dim">
+                    {t.created_by_username || (t.created_by_user_id ? `#${t.created_by_user_id}` : '—')}
+                  </div>
+                  <div className="finance-movement-actions">
+                    <Button variant="outline-light" size="sm" onClick={() => removeTx(t.id)} className="finance-delete">
+                      <FaTrash />
                     </Button>
-                  </Col>
-                </Row>
-              </Form>
-            </Card.Body>
-          </Card>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <Card className="admin-card app-card mt-3">
-            <Card.Body className="p-0">
-              <div className="d-flex align-items-center justify-content-between px-3 pt-3">
-                <div className="app-title">Movimenti</div>
-                <Badge bg="secondary" className="app-badge">{transactions.length}</Badge>
-              </div>
-              <div className="table-responsive px-3 pb-3 pt-2">
-                <Table className="mb-0 leaderboard-table finance-table">
-                  <thead>
-                    <tr>
-                      <th>Tipo</th>
-                      <th>Dettagli</th>
-                      <th className="text-center">Cassa</th>
-                      <th className="text-center">Importo</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transactions.map((t) => {
-                      const meta = kindMeta[t.kind] || { label: t.kind, icon: null };
-                      const occurred = t.occurred_at ? new Date(t.occurred_at) : null;
-                      return (
-                        <tr key={t.id}>
-                          <td className="align-middle">
-                            <div className="d-flex align-items-center gap-2">
-                              {meta.icon}
-                              <span className="finance-kind">{meta.label}</span>
-                            </div>
-                          </td>
-                          <td className="align-middle">
-                            <div className="finance-details">
-                              <div className="finance-title">
-                                {t.kind === 'EXPENSE'
-                                  ? (t.description || 'Spesa')
-                                  : (t.source_name || 'Entrata')}
-                              </div>
-                              <div className="finance-sub app-dim">
-                                {t.kind === 'EXPENSE'
-                                  ? (t.spent_by ? `Spesa da: ${t.spent_by}` : '')
-                                  : (t.kind === 'REGISTRATION' ? 'Iscrizione' : 'Sponsor')}
-                                {occurred ? ` • ${occurred.toLocaleDateString('it-IT')}` : ''}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className="app-dim">{t.holder_name || '—'}</span>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className={t.kind === 'EXPENSE' ? 'badge bg-danger app-badge' : 'badge bg-warning text-dark app-badge'}>
-                              {t.kind === 'EXPENSE' ? `-${formatCents(t.amount_cents)}` : formatCents(t.amount_cents)}
-                            </span>
-                          </td>
-                          <td className="align-middle text-end">
-                            <Button variant="outline-light" size="sm" onClick={() => removeTx(t.id)} className="finance-delete">
-                              <FaTrash />
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+          <div className="mt-3">
+            <div className="app-title mb-2">Saldo per cassa</div>
+            <div className="finance-holder-list">
+              {(summary?.by_holder || []).map((h) => (
+                <div key={h.holder_name} className="finance-holder-row">
+                  <div className="finance-holder-name">{h.holder_name}</div>
+                  <div className="finance-holder-value">{formatCents(h.net_cents)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
+
+      <Modal show={showModal} onHide={closeModal} centered>
+        <Form onSubmit={submit}>
+          <Modal.Header closeButton>
+            <Modal.Title className="app-title">
+              {modalMode === 'income' ? 'Nuova Entrata' : 'Nuova Uscita'}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Row className="g-2">
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Importo (€)</Form.Label>
+                  <Form.Control value={form.amount} onChange={onChange('amount')} placeholder="Es. 50 oppure 50,00" />
+                </Form.Group>
+              </Col>
+
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Chi lo tiene</Form.Label>
+                  <Form.Select value={form.holder_name} onChange={onChange('holder_name')}>
+                    <option value="">Seleziona</option>
+                    {adminUsers.map((u) => (
+                      <option key={u.id} value={u.username}>{u.name ? `${u.name} (${u.username})` : u.username}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Data/Ora</Form.Label>
+                  <Form.Control type="datetime-local" value={form.occurred_at} onChange={onChange('occurred_at')} />
+                </Form.Group>
+              </Col>
+
+              <Col md={6}>
+                {modalMode === 'income' ? (
+                  <Form.Group>
+                    <Form.Label>Tipo Entrata</Form.Label>
+                    <Form.Select value={form.kind} onChange={onChange('kind')}>
+                      <option value="SPONSOR">Sponsor</option>
+                      <option value="REGISTRATION">Iscrizione</option>
+                    </Form.Select>
+                  </Form.Group>
+                ) : (
+                  <Form.Group>
+                    <Form.Label>Chi ha speso</Form.Label>
+                    <Form.Control value={form.spent_by} onChange={onChange('spent_by')} placeholder="Es. Giuseppe" />
+                  </Form.Group>
+                )}
+              </Col>
+
+              {modalMode === 'income' && (
+                <Col md={12}>
+                  <Form.Group>
+                    <Form.Label>{form.kind === 'SPONSOR' ? 'Sponsor' : 'Squadra'}</Form.Label>
+                    <Form.Control value={form.source_name} onChange={onChange('source_name')} placeholder={form.kind === 'SPONSOR' ? 'Es. Bar Centrale' : 'Es. Torino'} />
+                  </Form.Group>
+                </Col>
+              )}
+
+              <Col md={12}>
+                <Form.Group>
+                  <Form.Label>Descrizione</Form.Label>
+                  <Form.Control value={form.description} onChange={onChange('description')} placeholder="Es. Stampa locandine" />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="outline-light" onClick={closeModal} disabled={submitting}>
+              Annulla
+            </Button>
+            <Button type="submit" variant="warning" disabled={submitting}>
+              {submitting ? 'Salvataggio...' : 'Salva'}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
     </Container>
   );
 };

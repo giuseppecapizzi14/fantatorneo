@@ -717,3 +717,108 @@
 .finance-table td {
   vertical-align: middle;
 }
+
+.finance-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.finance-action-btn {
+  flex: 1;
+}
+
+.finance-action-btn--danger {
+  border-color: rgba(255, 90, 111, 0.35) !important;
+  background: rgba(255, 90, 111, 0.14) !important;
+}
+
+.finance-action-btn--danger:hover {
+  border-color: rgba(255, 90, 111, 0.55) !important;
+  background: rgba(255, 90, 111, 0.18) !important;
+}
+
+.finance-movements {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.finance-movements-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.finance-movements-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.finance-movement-row {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto 84px 40px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.finance-movement-row:last-child {
+  border-bottom: none;
+}
+
+.finance-movement-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.finance-movement-main {
+  min-width: 0;
+}
+
+.finance-movement-title {
+  font-weight: 800;
+  color: var(--text-0);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.finance-movement-sub {
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.finance-movement-amount {
+  justify-self: end;
+}
+
+.finance-movement-user {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.finance-movement-actions {
+  justify-self: end;
+}
+
+@media (max-width: 576px) {
+  .finance-actions {
+    flex-direction: column;
+  }
+
+  .finance-movement-row {
+    grid-template-columns: 22px minmax(0, 1fr) auto 72px 38px;
+    gap: 8px;
+    padding: 10px 10px;
+  }
+}
