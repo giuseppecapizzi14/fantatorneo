@@ -216,9 +216,9 @@
 /* Admin Panel Styling */
 .admin-card {
   transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
-  background: rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 44%), var(--glass-0);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   border: 1px solid var(--stroke-0);
   color: var(--text-0);
 }
@@ -257,7 +257,7 @@
 }
 
 .custom-navbar {
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--glass-0);
   border-bottom: 1px solid var(--stroke-0);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -305,7 +305,9 @@
 
 .main-content {
   flex: 1;
-  padding-bottom: 18px;
+  padding-bottom: 22px;
+  padding-left: 10px;
+  padding-right: 10px;
   animation: pageIn var(--dur-1) var(--ease-out);
 }
 
@@ -321,7 +323,7 @@
 }
 
 .app-footer {
-  background: rgba(0, 0, 0, 0.22);
+  background: var(--glass-0);
   border-top: 1px solid var(--stroke-0);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -379,5 +381,25 @@
   * {
     animation-duration: 1ms !important;
     transition-duration: 1ms !important;
+  }
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  color: var(--text-0);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.leaderboard-table thead th {
+  background: rgba(255, 191, 0, 0.12);
+  color: var(--brand-0);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 576px) {
+  .main-content {
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-bottom: 28px;
   }
 }

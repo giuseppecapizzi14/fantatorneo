@@ -8,18 +8,34 @@ body {
 }
 
 .card {
-  background: var(--surface-0);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 42%), var(--glass-0);
   border: 1px solid var(--stroke-0);
   border-radius: var(--radius-1);
   color: var(--text-0);
   box-shadow: none;
   transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
 }
 
 .card:hover {
   transform: translateY(-2px);
   border-color: var(--stroke-1);
   box-shadow: var(--shadow-1);
+}
+
+.card-header,
+.card-footer {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--stroke-0);
+}
+
+.card-header {
+  padding: 14px 16px;
+}
+
+.card-body {
+  padding: 16px;
 }
 
 .list-group {
@@ -29,7 +45,7 @@ body {
 }
 
 .list-group-item {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text-0);
   border-color: var(--stroke-0);
   padding: 12px 14px;
@@ -40,15 +56,27 @@ body {
 }
 
 .table > :not(caption) > * > * {
-  background: var(--surface-0);
+  background: rgba(255, 255, 255, 0.03);
   border-color: var(--stroke-0);
+}
+
+.table-responsive {
+  border-radius: var(--radius-1);
+  border: 1px solid var(--stroke-0);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 40%), var(--glass-0);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: none;
 }
 
 .alert {
   border-radius: var(--radius-0);
   border: 1px solid var(--stroke-0);
-  background: var(--surface-0);
+  background: var(--glass-0);
   color: var(--text-0);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
 }
 
 .badge {
@@ -113,7 +141,28 @@ body {
 
 @media (max-width: 576px) {
   .container, .container-fluid {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .row {
+    --bs-gutter-x: 16px;
+    --bs-gutter-y: 16px;
+  }
+
+  .card-header {
+    padding: 16px 16px;
+  }
+
+  .card-body {
+    padding: 18px 16px;
+  }
+}
+
+@media (hover: none) {
+  .card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--stroke-0);
   }
 }

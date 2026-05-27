@@ -2,7 +2,7 @@
   --bg-0: #070a12;
   --bg-1: #0b1020;
   --surface-0: rgba(255, 255, 255, 0.06);
-  --surface-1: rgba(255, 255, 255, 0.1);
+  --surface-1: rgba(255, 255, 255, 0.12);
   --stroke-0: rgba(255, 255, 255, 0.12);
   --stroke-1: rgba(255, 255, 255, 0.18);
   --text-0: rgba(255, 255, 255, 0.92);
@@ -21,6 +21,10 @@
   --dur-1: 220ms;
   --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   --font-display: Outfit, Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --glass-0: rgba(0, 0, 0, 0.32);
+  --glass-1: rgba(0, 0, 0, 0.42);
+  --glass-blur: 18px;
+  --glass-sat: 140%;
 
   --bs-body-bg: var(--bg-1);
   --bs-body-color: var(--text-0);
