@@ -54,6 +54,20 @@ body {
   flex-direction: column;
 }
 
+.app-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-muted {
+  color: var(--text-1) !important;
+}
+
+.app-dim {
+  color: var(--text-2) !important;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   letter-spacing: -0.02em;

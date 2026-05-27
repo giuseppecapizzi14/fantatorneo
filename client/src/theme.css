@@ -139,6 +139,83 @@ body {
   filter: brightness(1.03);
 }
 
+.app-card {
+  overflow: hidden;
+}
+
+.app-card-header-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.app-badge {
+  border-radius: 999px;
+  padding: 0 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: 30px;
+  min-width: 60px;
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-list-item {
+  border-left: 0;
+  border-right: 0;
+}
+
+.app-player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.app-player-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.app-player-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-player-badges {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 360px) {
+  .app-player-row {
+    align-items: flex-start;
+  }
+
+  .app-player-badges {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .app-badge {
+    height: 28px;
+    min-width: 64px;
+  }
+}
+
 @media (max-width: 576px) {
   .container, .container-fluid {
     padding-left: 18px;

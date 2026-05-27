@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Form, Button, Alert, Card, Row, Col, Badge, ListGroup, Offcanvas, Tabs, Tab, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getPlayers, createTeam } from '../services/api';
-import { FaFutbol, FaShieldAlt, FaRunning, FaHandsHelping, FaSave, FaTimes, FaList, FaTrophy, FaSearch } from 'react-icons/fa';
+import { FaRunning, FaHandsHelping, FaSave, FaTimes, FaList, FaTrophy, FaSearch } from 'react-icons/fa';
 
 const TeamCreate = () => {
   // Budget state variables

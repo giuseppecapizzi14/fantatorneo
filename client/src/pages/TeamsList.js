@@ -14,17 +14,14 @@ const TeamsList = () => {
       try {
         // Prima otteniamo l'elenco di tutte le squadre
         const res = await getTeams();
-        console.log('Teams data:', res.data);
         
         // Fetch details for each team
         const teamsWithDetails = await Promise.all(
           res.data.map(async (team) => {
             try {
               const details = await getTeamDetails(team.id);
-              console.log(`Team ${team.id} details:`, details);
               return details;
             } catch (err) {
-              console.error(`Error fetching details for team ${team.id}:`, err);
               return team; // Return basic team info if details fetch fails
             }
           })
@@ -33,7 +30,6 @@ const TeamsList = () => {
         setTeams(teamsWithDetails);
       } catch (err) {
         setError('Errore nel caricamento delle squadre');
-        console.error('Error fetching teams:', err);
       } finally {
         setLoading(false);
       }
@@ -64,33 +60,29 @@ const TeamsList = () => {
 
   // Funzione di debug per visualizzare la struttura dei dati
   const renderPlayersList = (team) => {
-    console.log('Rendering players for team:', team);
-    
     if (!team.players) {
-      console.log('No players array found for team:', team.id);
-      return <p className="text-white text-muted">Nessun giocatore nella squadra</p>;
+      return <p className="app-muted mb-0">Nessun giocatore nella squadra</p>;
     }
     
     if (team.players.length === 0) {
-      return <p className="text-white text-muted">Nessun giocatore nella squadra</p>;
+      return <p className="app-muted mb-0">Nessun giocatore nella squadra</p>;
     }
     
     return (
       <ListGroup variant="flush">
         {team.players.map(player => {
-          console.log('Player data:', player);
           return (
-            <ListGroup.Item key={player.id} className="px-2 admin-card border-warning no-hover-card">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="text-white">
-                  <Badge bg={player.is_goalkeeper ? 'warning' : 'info'} className="me-2">
+            <ListGroup.Item key={player.id} className="app-list-item">
+              <div className="app-player-row">
+                <div className="app-player-left">
+                  <Badge bg={player.is_goalkeeper ? 'warning' : 'info'} className={player.is_goalkeeper ? 'text-dark app-badge' : 'app-badge'}>
                     {player.is_goalkeeper ? 'P' : player.position?.charAt(0) || 'G'}
                   </Badge>
-                  {player.name}
+                  <span className="app-player-name">{player.name}</span>
                 </div>
-                <div>
-                  <Badge bg="secondary" className="me-2">{player.price} cr</Badge>
-                  <Badge bg="warning" className="text-dark">{player.total_points || 0} pt</Badge>
+                <div className="app-player-badges">
+                  <Badge bg="secondary" className="app-badge">{player.price} cr</Badge>
+                  <Badge bg="warning" className="text-dark app-badge">{player.total_points || 0} pt</Badge>
                 </div>
               </div>
             </ListGroup.Item>
@@ -112,23 +104,7 @@ const TeamsList = () => {
 
   return (
     <Container>
-      <style>
-        {`
-          .no-hover-card {
-            transition: none !important;
-          }
-          .no-hover-card:hover {
-            transform: none !important;
-            box-shadow: none !important;
-          }
-          .list-group-item.admin-card:hover {
-            transform: none !important;
-            box-shadow: none !important;
-          }
-        `}
-      </style>
-      
-      <h2 className="mb-4 text-center text-warning">
+      <h2 className="mb-4 text-center text-warning app-title">
         <FaUsers className="me-2" />
         Tutte le Squadre
       </h2>
@@ -141,13 +117,13 @@ const TeamsList = () => {
         <Row>
           {teams.map(team => (
             <Col key={team.id} md={6} lg={4} className="mb-4">
-              <Card className="h-100 admin-card border-warning no-hover-card">
-                <Card.Header className="d-flex justify-content-between align-items-center admin-card border-warning">
-                  <h5 className="mb-0 text-warning">{team.name}</h5>
-                  <Badge bg="warning" className="text-dark">{team.total_points || 0} pt</Badge>
+              <Card className="h-100 admin-card app-card">
+                <Card.Header className="d-flex justify-content-between align-items-center">
+                  <h5 className="mb-0 text-warning app-card-header-title">{team.name}</h5>
+                  <Badge bg="warning" className="text-dark app-badge">{team.total_points || 0} pt</Badge>
                 </Card.Header>
                 <Card.Body>
-                  <Card.Subtitle className="mb-3 text-white">
+                  <Card.Subtitle className="mb-3 app-muted">
                     <FaTrophy className="text-warning me-2" />
                     Proprietario: <span className="text-warning">{team.owner_username}</span>
                   </Card.Subtitle>

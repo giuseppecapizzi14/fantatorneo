@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Form, Alert, Spinner, Modal } from '
 import { FaClipboardList, FaEdit, FaSave, FaTimes, FaFutbol } from 'react-icons/fa';
 import { getCalendarMatches } from '../../services/api';
 import api from '../../services/api';
+import { getTeamLogoSrc } from '../../utils/teamLogos';
 
 const AdminResults = () => {
   const [matches, setMatches] = useState([]);
@@ -103,12 +104,8 @@ const AdminResults = () => {
     }
   };
 
-  const getTeamLogo = (teamName) => {
-    return `/logos/${teamName.toLowerCase().replace(/\s+/g, '-')}.png`;
-  };
-
   const TeamDisplay = ({ teamName, isHome = true }) => {
-    const logoSrc = getTeamLogo(teamName);
+    const logoSrc = getTeamLogoSrc(teamName);
     
     return (
       <div className="d-flex align-items-center" style={{ 
@@ -118,8 +115,8 @@ const AdminResults = () => {
         {isHome ? (
           <>
             <img 
-              src={logoSrc} 
-              alt={`${teamName} logo`}
+              src={logoSrc || ''} 
+              alt=""
               style={{
                 width: '20px',
                 height: '20px',
@@ -127,7 +124,7 @@ const AdminResults = () => {
                 objectFit: 'contain'
               }}
               onError={(e) => {
-                e.target.style.display = 'none';
+                e.currentTarget.style.display = 'none';
               }}
             />
             <span style={{ fontSize: '0.9rem', fontWeight: 'normal' }}>{teamName}</span>
@@ -136,8 +133,8 @@ const AdminResults = () => {
           <>
             <span style={{ fontSize: '0.9rem', fontWeight: 'normal' }}>{teamName}</span>
             <img 
-              src={logoSrc} 
-              alt={`${teamName} logo`}
+              src={logoSrc || ''} 
+              alt=""
               style={{
                 width: '20px',
                 height: '20px',
@@ -145,7 +142,7 @@ const AdminResults = () => {
                 objectFit: 'contain'
               }}
               onError={(e) => {
-                e.target.style.display = 'none';
+                e.currentTarget.style.display = 'none';
               }}
             />
           </>

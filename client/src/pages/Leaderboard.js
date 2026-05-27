@@ -60,55 +60,41 @@ const Leaderboard = () => {
       {teams.length === 0 ? (
         <Alert variant="info">Nessuna squadra in classifica</Alert>
       ) : (
-        <>
-          <div className="d-none d-md-block">
-            <Table responsive className="leaderboard-table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Squadra</th>
-                  <th>Proprietario</th>
-                  <th className="text-center">Punti</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teams.map((team, index) => (
-                  <tr key={team.id}>
-                    <td className="align-middle">
-                      {getMedalIcon(index + 1)}
-                    </td>
-                    <td className="align-middle text-warning">{team.name}</td>
-                    <td className="align-middle">{team.owner_username}</td>
-                    <td className="align-middle text-center">
-                      <span className="badge bg-warning text-dark px-3 py-2">
-                        {team.total_points || 0}
-                      </span>
-                    </td>
+        <Card className="admin-card leaderboard-card">
+          <Card.Body className="leaderboard-card-body">
+            <div className="table-responsive leaderboard-table-wrap">
+              <Table className="leaderboard-table mb-0">
+                <thead>
+                  <tr>
+                    <th className="leaderboard-col-rank"></th>
+                    <th className="leaderboard-col-team text-center">Squadra</th>
+                    <th className="leaderboard-col-points text-center">Punti</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-
-          <div className="d-md-none">
-            {teams.map((team, index) => (
-              <Card key={team.id} className="admin-card mb-3">
-                <Card.Body>
-                  <div className="d-flex align-items-center justify-content-between mb-2">
-                    <div className="d-flex align-items-center gap-2">
-                      <span className="text-warning">{getMedalIcon(index + 1)}</span>
-                      <span className="fw-semibold text-warning">{team.name}</span>
-                    </div>
-                    <span className="badge bg-warning text-dark px-3 py-2">
-                      {team.total_points || 0}
-                    </span>
-                  </div>
-                  <div className="small text-white-50">{team.owner_username}</div>
-                </Card.Body>
-              </Card>
-            ))}
-          </div>
-        </>
+                </thead>
+                <tbody>
+                  {teams.map((team, index) => (
+                    <tr key={team.id} className={index < 3 ? `leaderboard-row leaderboard-row--${index + 1}` : 'leaderboard-row'}>
+                      <td className="leaderboard-col-rank">
+                        <span className="leaderboard-rank">{getMedalIcon(index + 1)}</span>
+                      </td>
+                      <td>
+                        <div className="leaderboard-team-cell">
+                          <div className="leaderboard-team-name text-warning">{team.name}</div>
+                          <div className="leaderboard-owner app-dim">{team.owner_username}</div>
+                        </div>
+                      </td>
+                      <td className="leaderboard-col-points text-center">
+                        <span className="badge bg-warning text-dark app-badge">
+                          {team.total_points || 0}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </Card.Body>
+        </Card>
       )}
     </Container>
   );

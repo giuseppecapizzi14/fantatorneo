@@ -396,10 +396,255 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+.leaderboard-card {
+  overflow: hidden;
+  border-color: var(--stroke-1);
+}
+
+.leaderboard-table {
+  table-layout: fixed;
+}
+
+.leaderboard-card-body {
+  padding: 14px;
+}
+
+.leaderboard-table-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 12px 14px;
+}
+
+.leaderboard-col-rank {
+  width: 44px;
+  text-align: center;
+}
+
+.leaderboard-col-team {
+  text-align: center;
+}
+
+.leaderboard-col-points {
+  width: 92px;
+  text-align: center;
+}
+
+.leaderboard-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboard-team-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+
+.leaderboard-team-name {
+  font-weight: 700;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-owner {
+  margin-top: 2px;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-row > td {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.leaderboard-row--1 {
+  background: linear-gradient(90deg, rgba(255, 191, 0, 0.16), rgba(255, 191, 0, 0.04));
+}
+
+.leaderboard-row--2 {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+}
+
+.leaderboard-row--3 {
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.18), rgba(205, 127, 50, 0.05));
+}
+
 @media (max-width: 576px) {
   .main-content {
     padding-left: 14px;
     padding-right: 14px;
     padding-bottom: 28px;
+  }
+
+  .leaderboard-card-body {
+    padding: 12px;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 10px 12px;
+  }
+
+  .leaderboard-col-points {
+    width: 84px;
+  }
+}
+
+.calendar-card {
+  border-color: var(--stroke-1);
+}
+
+.calendar-card-body {
+  padding: 14px;
+}
+
+.calendar-day--spaced {
+  margin-top: 14px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 191, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-0);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+
+.calendar-time-group {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.calendar-time-group--spaced {
+  margin-top: 12px;
+}
+
+.calendar-time-group-header {
+  display: grid;
+  grid-template-columns: 20px 1fr 20px;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-0);
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-time-group-icon {
+  color: var(--brand-0);
+  justify-self: start;
+}
+
+.calendar-time-group-text {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  justify-self: center;
+}
+
+.calendar-time-group-list {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.calendar-match-row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 86px minmax(0, 1fr) 16px;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+}
+
+.calendar-match-row--divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calendar-side-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.calendar-side-logo--left {
+  justify-self: end;
+}
+
+.calendar-side-logo--right {
+  justify-self: start;
+}
+
+.calendar-side-name--left {
+  padding-right: 2px;
+}
+
+.calendar-side-name--right {
+  padding-left: 2px;
+}
+
+.calendar-side-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-side-name--left {
+  text-align: right;
+}
+
+.calendar-side-name--right {
+  text-align: left;
+}
+
+.calendar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-score-badge {
+  min-width: 68px;
+}
+
+.calendar-vs {
+  color: var(--brand-0);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 576px) {
+  .calendar-card-body {
+    padding: 12px;
+  }
+
+  .calendar-match-row {
+    grid-template-columns: 70px minmax(0, 1fr) 74px minmax(0, 1fr) 70px;
+    gap: 6px;
+    padding: 10px 10px;
+  }
+
+  .calendar-side-logo {
+    width: 20px;
+    height: 20px;
   }
 }

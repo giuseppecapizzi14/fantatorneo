@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Modal, Form, Alert, Badge, Spinner, Row, Col, Card } from 'react-bootstrap';
+import { Container, Table, Button, Modal, Form, Alert, Badge, Spinner, Card } from 'react-bootstrap';
 import { FaFutbol, FaUserPlus, FaEdit, FaTrash } from 'react-icons/fa';
 import { getPlayers, createPlayer, updatePlayer, deletePlayer } from '../../services/api';
 
@@ -10,7 +10,6 @@ const AdminPlayers = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [roleFilter, setRoleFilter] = useState('all');
   const [formData, setFormData] = useState({
     name: '',
     position: 'Portiere',

@@ -9,7 +9,6 @@ import { getUserTeam } from '../services/api'; // Importa la funzione getUserTea
 const Home = () => {
   const [hasTeam, setHasTeam] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   // Check if user has a team
   useEffect(() => {
@@ -17,7 +16,6 @@ const Home = () => {
       const token = localStorage.getItem('token');
       
       if (token) {
-        setIsAuthenticated(true);
         try {
           // First, decode the token to get user info
           const base64Url = token.split('.')[1];
@@ -33,11 +31,7 @@ const Home = () => {
           // Modifica: Estrai l'ID utente in modo più robusto, controllando tutti i possibili campi
           const userId = decoded.user?.id || decoded.userId || decoded.id || decoded.user?.userId || decoded.sub;
           
-          console.log('Decoded token:', decoded); // Log completo del token decodificato
-          console.log('Checking teams for user ID:', userId); // Debug log
-          
           if (!userId) {
-            console.error('No user ID found in token');
             setHasTeam(false);
             setLoading(false);
             return;
@@ -45,8 +39,6 @@ const Home = () => {
           
           // Utilizza la funzione importata invece di fare una chiamata diretta
           const response = await getUserTeam(userId);
-          
-          console.log('Team API response:', response);
           
           // Se riceviamo una risposta valida, l'utente ha una squadra
           if (response.data) {
@@ -67,7 +59,6 @@ const Home = () => {
           }
         }
       } else {
-        setIsAuthenticated(false);
         setHasTeam(false);
       }
       
@@ -117,7 +108,6 @@ const Home = () => {
     // Filter out "Crea la tua Squadra" if user already has a team
     const filteredFeatures = allFeatures.filter(feature => {
       const shouldShow = !feature.showOnlyIfNoTeam || (feature.showOnlyIfNoTeam && !hasTeam);
-      console.log(`Feature "${feature.title}" - showOnlyIfNoTeam: ${feature.showOnlyIfNoTeam}, hasTeam: ${hasTeam}, shouldShow: ${shouldShow}`);
       return shouldShow;
     });
     
@@ -126,9 +116,8 @@ const Home = () => {
 
   return (
     <Container>
-      {console.log('Rendering with hasTeam:', hasTeam)}
       <div className="text-center mb-5">
-        <h1 className="mb-3">Benvenuto al FANTATORNEO</h1>
+        <h1 className="mb-3 app-title">Benvenuto al FANTATORNEO</h1>
       </div>
       
       {loading ? (
@@ -146,7 +135,7 @@ const Home = () => {
                       {feature.icon}
                     </div>
                     <Card.Title>{feature.title}</Card.Title>
-                    <Card.Text className="text-white">
+                    <Card.Text className="app-muted">
                       {feature.description}
                     </Card.Text>
                   </Card.Body>
@@ -157,7 +146,8 @@ const Home = () => {
         </Row>
       )}
       
-      <Col md={6} lg={8} className="mb-4">
+      <Row className="justify-content-center">
+        <Col md={10} lg={8} className="mb-4">
           <Card className="h-100 text-center admin-card">
             <Card.Body>
               <div className="icon-container mb-3 text-warning mx-auto" style={{ width: '80px', height: '80px' }}>
@@ -174,67 +164,67 @@ const Home = () => {
                   <div className="text-start">
                     <div className="mb-2">
                       <FaFutbol className="text-success me-2" />
-                      <span className="text-white">Gol segnato: </span>
+                      <span>Gol segnato: </span>
                       <span className="text-success fw-bold">+3</span>
                     </div>
                     <div className="mb-2">
                       <FaHandsHelping className="text-info me-2" />
-                      <span className="text-white">Assist: </span>
+                      <span>Assist: </span>
                       <span className="text-success fw-bold">+1</span>
                     </div>
                     <div className="mb-2">
                       <FaFutbol className="text-success me-2" />
-                      <span className="text-white">Tiro libero segnato: </span>
+                      <span>Tiro libero segnato: </span>
                       <span className="text-success fw-bold">+3</span>
                     </div>
                     <div className="mb-2">
                       <FaTimesCircle className="text-danger me-2" />
-                      <span className="text-white">Tiro libero sbagliato: </span>
+                      <span>Tiro libero sbagliato: </span>
                       <span className="text-danger fw-bold">-2</span>
                     </div>
                     <div className="mb-2">
                       <FaTimesCircle className="text-danger me-2" />
-                      <span className="text-white">Rigore sbagliato: </span>
+                      <span>Rigore sbagliato: </span>
                       <span className="text-danger fw-bold">-3</span>
                     </div>
                     <div className="mb-2">
                       <FaFutbol className="text-success me-2" />
-                      <span className="text-white">Rigore segnato: </span>
+                      <span>Rigore segnato: </span>
                       <span className="text-success fw-bold">+2</span>
                     </div>
                     <div className="mb-2">
                       <FaExclamationTriangle className="text-warning me-2" />
-                      <span className="text-white">Ammonizione: </span>
+                      <span>Ammonizione: </span>
                       <span className="text-danger fw-bold">-1</span>
                     </div>
                     <div className="mb-2">
                       <FaTimesCircle className="text-danger me-2" />
-                      <span className="text-white">Espulsione: </span>
+                      <span>Espulsione: </span>
                       <span className="text-danger fw-bold">-2</span>
                     </div>
                     <div className="mb-2">
                       <FaMedal className="text-warning me-2" />
-                      <span className="text-white">MVP: </span>
+                      <span>MVP: </span>
                       <span className="text-success fw-bold">+2</span>
                     </div>
                     <div className="mb-2">
                       <FaTrophy className="text-warning me-2" />
-                      <span className="text-white">Passaggio ai quarti: </span>
+                      <span>Passaggio ai quarti: </span>
                       <span className="text-success fw-bold">+3</span>
                     </div>
                     <div className="mb-2">
                       <FaTrophy className="text-warning me-2" />
-                      <span className="text-white">Passaggio in semifinale: </span>
+                      <span>Passaggio in semifinale: </span>
                       <span className="text-success fw-bold">+5</span>
                     </div>
                     <div className="mb-2">
                       <FaTrophy className="text-warning me-2" />
-                      <span className="text-white">Passaggio in finale: </span>
+                      <span>Passaggio in finale: </span>
                       <span className="text-success fw-bold">+7</span>
                     </div>
                     <div className="mb-2">
                       <FaCrown className="text-warning me-2" />
-                      <span className="text-white">Vincente in finale: </span>
+                      <span>Vincente in finale: </span>
                       <span className="text-success fw-bold">+10</span>
                     </div>
                   </div>
@@ -248,57 +238,57 @@ const Home = () => {
                   <div className="text-start">
                     <div className="mb-2">
                       <FaShieldAlt className="text-success me-2" />
-                      <span className="text-white">Porta imbattuta: </span>
+                      <span>Porta imbattuta: </span>
                       <span className="text-success fw-bold">+2</span>
                     </div>
                     <div className="mb-2">
                       <FaFutbol className="text-danger me-2" />
-                      <span className="text-white">Gol subito: </span>
+                      <span>Gol subito: </span>
                       <span className="text-danger fw-bold">-0.5</span>
                     </div>
                     <div className="mb-2">
                       <FaHandPaper className="text-success me-2" />
-                      <span className="text-white">Rigore parato: </span>
+                      <span>Rigore parato: </span>
                       <span className="text-success fw-bold">+3</span>
                     </div>
                     <div className="mb-2">
                       <FaHandPaper className="text-success me-2" />
-                      <span className="text-white">Tiro libero parato: </span>
+                      <span>Tiro libero parato: </span>
                       <span className="text-success fw-bold">+2</span>
                     </div>
                     <div className="mb-2">
                       <FaExclamationTriangle className="text-warning me-2" />
-                      <span className="text-white">Ammonizione: </span>
+                      <span>Ammonizione: </span>
                       <span className="text-danger fw-bold">-1</span>
                     </div>
                     <div className="mb-2">
                       <FaTimesCircle className="text-danger me-2" />
-                      <span className="text-white">Espulsione: </span>
+                      <span>Espulsione: </span>
                       <span className="text-danger fw-bold">-2</span>
                     </div>
                     <div className="mb-2">
                       <FaMedal className="text-warning me-2" />
-                      <span className="text-white">MVP: </span>
+                      <span>MVP: </span>
                       <span className="text-success fw-bold">+2</span>
                     </div>
                     <div className="mb-2">
                       <FaTrophy className="text-warning me-2" />
-                      <span className="text-white">Passaggio ai quarti: </span>
+                      <span>Passaggio ai quarti: </span>
                       <span className="text-success fw-bold">+5</span>
                     </div>
                     <div className="mb-2">
                       <FaTrophy className="text-warning me-2" />
-                      <span className="text-white">Passaggio in semifinale: </span>
+                      <span>Passaggio in semifinale: </span>
                       <span className="text-success fw-bold">+10</span>
                     </div>
                     <div className="mb-2">
                       <FaTrophy className="text-warning me-2" />
-                      <span className="text-white">Passaggio in finale: </span>
+                      <span>Passaggio in finale: </span>
                       <span className="text-success fw-bold">+15</span>
                     </div>
                     <div className="mb-2">
                       <FaCrown className="text-warning me-2" />
-                      <span className="text-white">Vincente finale: </span>
+                      <span>Vincente finale: </span>
                       <span className="text-success fw-bold">+20</span>
                     </div>
                   </div>
@@ -307,6 +297,7 @@ const Home = () => {
             </Card.Body>
           </Card>
         </Col>
+      </Row>
     </Container>
   );
 };
