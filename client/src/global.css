@@ -1,42 +1,74 @@
+:root {
+  --bg-0: #070a12;
+  --bg-1: #0b1020;
+  --surface-0: rgba(255, 255, 255, 0.06);
+  --surface-1: rgba(255, 255, 255, 0.1);
+  --stroke-0: rgba(255, 255, 255, 0.12);
+  --stroke-1: rgba(255, 255, 255, 0.18);
+  --text-0: rgba(255, 255, 255, 0.92);
+  --text-1: rgba(255, 255, 255, 0.72);
+  --text-2: rgba(255, 255, 255, 0.56);
+  --brand-0: #ffd84d;
+  --brand-1: #ffbf00;
+  --danger-0: #ff5a6f;
+  --radius-0: 12px;
+  --radius-1: 16px;
+  --shadow-0: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-1: 0 6px 16px rgba(0, 0, 0, 0.24);
+  --ring-0: 0 0 0 4px rgba(255, 191, 0, 0.18);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-0: 120ms;
+  --dur-1: 220ms;
+  --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-display: Outfit, Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  --bs-body-bg: var(--bg-1);
+  --bs-body-color: var(--text-0);
+  --bs-link-color: var(--brand-0);
+  --bs-link-hover-color: var(--brand-1);
+}
+
+html, body {
+  height: 100%;
+}
+
 body {
-  background-image: url('../public/fifa-trophy-background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  margin: 0;
   min-height: 100vh;
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans);
+  background: radial-gradient(900px 500px at 20% 0%, rgba(255, 191, 0, 0.12), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(72, 102, 255, 0.14), transparent 55%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1));
+  color: var(--text-0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Add text shadow to all text elements for better readability */
-h3, h4, h5, h6, p, span, div, a, button, label, input, select, option, li {
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-  font-family: 'Montserrat', sans-serif;
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Enhanced heading styles with Rubik font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
 h1, h2 {
-  font-family: 'Rubik', sans-serif !important;
-  font-weight: 700 !important;
-  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.8);
-  color: rgb(255, 208, 0);
+  color: var(--text-0);
 }
 
-h1 {
-  letter-spacing: -0.5px;
-  font-size: 2.5rem !important;
-  margin-bottom: 1.2rem;
+p {
+  color: var(--text-1);
 }
 
-h2 {
-  letter-spacing: -0.3px;
-  font-size: 2rem !important;
-  margin-bottom: 1rem;
+a {
+  text-decoration: none;
 }
 
-/* Ensure text in buttons is readable */
-.btn {
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-  font-weight: 500;
-  font-family: 'Montserrat', sans-serif;
+*:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-0);
+  border-radius: 10px;
 }

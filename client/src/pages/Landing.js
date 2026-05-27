@@ -18,11 +18,11 @@ import {
 
 const Landing = () => {
   return (
-    <Container className="text-center d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+    <Container className="landing-hero text-center d-flex flex-column justify-content-center align-items-center">
       <div className="mb-3">
-        <FaFutbol size={80} className="text-warning mb-4" />
-        <h1 className="display-4 mb-3">Benvenuto al FANTATORNEO</h1>
-        <p className="lead mb-3">
+        <img src="/logo.png" width="64" height="64" alt="Fantatorneo" className="mb-3 landing-logo" />
+        <h1 className="display-5 mb-2">Benvenuto su Fantatorneo</h1>
+        <p className="lead mb-0">
           Crea la tua squadra, seleziona i migliori giocatori e competi con i tuoi amici.
         </p>
       </div>
@@ -31,7 +31,7 @@ const Landing = () => {
         <Button 
           variant="warning" 
           size="lg" 
-          className="px-5 py-3 rounded-pill shadow-lg mb-5"
+          className="landing-cta px-5 py-3 rounded-pill mb-5"
         >
           Accedi per Giocare
         </Button>

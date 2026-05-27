@@ -29,12 +29,6 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
       expand="lg" 
       expanded={expanded} 
       className="mb-4 custom-navbar sticky-top"
-      style={{
-        backgroundColor: 'rgba(33, 37, 41, 0.4)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        border: 'none'
-      }}
     >
       <Container>
         <BootstrapNavbar.Brand 
@@ -42,13 +36,13 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
           style={{ cursor: 'pointer' }}
         >
           <img
-            src="/soccer-player.png"
-            width="30"
-            height="30"
+            src="/logo.png"
+            width="28"
+            height="28"
             className="d-inline-block align-top me-2"
-            alt="Soccer player"
+            alt="Fantatorneo"
           />
-          <span style={{ color: 'rgb(255, 208, 0)' }}>FANTATORNEO</span>
+          <span>FANTATORNEO</span>
         </BootstrapNavbar.Brand>
         <BootstrapNavbar.Toggle 
           aria-controls="basic-navbar-nav" 
@@ -62,8 +56,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
               as={Link} 
               to="/calendar" 
               onClick={closeNavbar}
-              className="text-white text-uppercase nav-item"
-              style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+              className="text-uppercase nav-item"
             >
               Calendario & Risultati
             </Nav.Link>
@@ -74,8 +67,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/dashboard" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase nav-item"
-                  style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                  className="text-uppercase nav-item"
                 >
                   Dashboard
                 </Nav.Link>
@@ -83,8 +75,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/teams" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase nav-item"
-                  style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                  className="text-uppercase nav-item"
                 >
                   Squadre
                 </Nav.Link>
@@ -92,8 +83,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/leaderboard" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase nav-item"
-                  style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                  className="text-uppercase nav-item"
                 >
                   Classifica
                 </Nav.Link>
@@ -103,23 +93,16 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                     as={Link} 
                     to="/admin" 
                     onClick={closeNavbar}
-                    className="text-white text-uppercase nav-item"
-                    style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                    className="text-uppercase nav-item"
                   >
                     Admin
                   </Nav.Link>
                 )}
                 
                 <Button 
-                  variant="outline-light" 
+                  variant="outline-light"
                   onClick={() => {handleLogout(); closeNavbar();}}
                   className="nav-item logout-btn"
-                  style={{ 
-                    backgroundColor: 'rgba(220, 53, 69, 0.3)',
-                    borderRadius: '10px',
-                    borderColor: 'rgba(255, 80, 97, 0.3)',
-                    padding: '0.25rem 0.75rem',
-                  }}
                 >
                   Logout
                 </Button>
@@ -130,8 +113,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase nav-item"
-                  style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                  className="text-uppercase nav-item"
                 >
                   Home
                 </Nav.Link>
@@ -139,8 +121,7 @@ const NavbarComponent = ({ isAuthenticated, user, setIsAuthenticated, setUser })
                   as={Link} 
                   to="/login" 
                   onClick={closeNavbar}
-                  className="text-white text-uppercase nav-item"
-                  style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                  className="text-uppercase nav-item"
                 >
                   Login
                 </Nav.Link>

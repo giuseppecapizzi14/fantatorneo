@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: initial;
 }
 
 .App-logo {
@@ -71,39 +71,40 @@
 
 /* Stili per rendere trasparente il dropdown menu */
 /* Stili per rendere il dropdown menu integrato con la navbar */
-/* Integrated dropdown styling - match exactly with navbar */
+/* Integrated dropdown styling */
 .transparent-dropdown .dropdown-menu {
-  background-color: rgba(33, 37, 41, 0.4) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  border: none !important;
-  border-radius: 0 0 8px 8px !important;
+  background: rgba(0, 0, 0, 0.32) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--stroke-0) !important;
+  border-radius: 14px !important;
   margin-top: 0 !important;
-  padding: 0 !important;
-  animation: fadeIn 0.2s ease-in-out;
-  box-shadow: none !important;
+  padding: 6px !important;
+  animation: fadeIn var(--dur-1) var(--ease-out);
+  box-shadow: var(--shadow-1) !important;
 }
 
 /* Ensure dropdown items have transparent background */
 .transparent-dropdown .dropdown-item {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: var(--text-0) !important;
   background-color: transparent !important;
-  padding: 10px 20px !important;
-  transition: all 0.2s ease;
+  padding: 10px 12px !important;
+  border-radius: 10px;
+  transition: transform var(--dur-0) var(--ease-out), background-color var(--dur-0) var(--ease-out), color var(--dur-0) var(--ease-out);
 }
 
 /* Ensure hover state maintains transparency */
 .transparent-dropdown .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: rgb(255, 208, 0) !important;
-  transform: translateX(5px);
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--brand-0) !important;
+  transform: translateX(2px);
 }
 
 /* Animation for dropdown */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
@@ -113,11 +114,11 @@
 
 /* Style for dropdown toggle */
 .transparent-dropdown .dropdown-toggle {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: var(--text-0) !important;
 }
 
 .transparent-dropdown .dropdown-toggle:hover {
-  color: rgb(255, 208, 0) !important;
+  color: var(--brand-0) !important;
 }
 
 /* Remove dropdown arrow */
@@ -125,30 +126,13 @@
   display: none !important;
 }
 
-.transparent-dropdown .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: white !important;
-}
-
-/* Animazione per il dropdown */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Animazione per la chiusura del dropdown */
 .dropdown-menu.show {
-  animation: fadeIn 0.2s ease-in-out;
+  animation: fadeIn var(--dur-1) var(--ease-out);
 }
 
 .dropdown-menu {
-  animation: fadeOut 0.2s ease-in-out;
+  animation: fadeOut var(--dur-1) var(--ease-out);
 }
 
 @keyframes fadeOut {
@@ -158,7 +142,7 @@
   }
   to {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
 }
 
@@ -180,7 +164,7 @@
 .custom-toggler .navbar-toggler-icon {
   width: 24px;
   height: 2px;
-  background-color: rgb(255, 208, 0) !important;
+  background-color: var(--brand-0) !important;
   display: block;
   transition-property: transform;
   transition-duration: 0.3s;
@@ -231,21 +215,22 @@
 
 /* Admin Panel Styling */
 .admin-card {
-  transition: all 0.3s ease;
-  background-color: rgba(33, 37, 41, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: none;
-  color: white;
+  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--stroke-0);
+  color: var(--text-0);
 }
 
 .admin-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-0);
+  border-color: var(--stroke-1);
 }
 
 .admin-card .icon-container {
-  background-color: rgba(255, 208, 0, 0.1);
+  background-color: rgba(255, 191, 0, 0.12);
   border-radius: 50%;
   width: 80px;
   height: 80px;
@@ -253,20 +238,146 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-  transition: all 0.3s ease;
+  transition: transform var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
 }
 
 .admin-card:hover .icon-container {
-  background-color: rgba(255, 208, 0, 0.2);
-  transform: scale(1.1);
+  background-color: rgba(255, 191, 0, 0.18);
+  transform: scale(1.04);
 }
 
 .admin-card .card-title {
-  color: rgb(255, 208, 0);
-  font-weight: 600;
+  color: var(--text-0);
+  font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
 .admin-card .card-text {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-1);
+}
+
+.custom-navbar {
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid var(--stroke-0);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.custom-navbar .navbar-brand {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  color: var(--text-0);
+  opacity: 0.95;
+}
+
+.custom-navbar .navbar-brand:hover {
+  color: var(--text-0);
+  opacity: 1;
+}
+
+.custom-navbar .nav-link {
+  color: var(--text-0) !important;
+  opacity: 0.9;
+  border-radius: 12px;
+  padding: 10px 12px;
+  transition: background-color var(--dur-0) var(--ease-out), transform var(--dur-0) var(--ease-out), opacity var(--dur-0) var(--ease-out);
+}
+
+.custom-navbar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 1;
+}
+
+.custom-navbar .nav-link:active {
+  transform: translateY(1px);
+}
+
+.custom-navbar .logout-btn {
+  width: auto;
+  border-color: rgba(255, 90, 111, 0.35) !important;
+  background: rgba(255, 90, 111, 0.14) !important;
+}
+
+.custom-navbar .logout-btn:hover {
+  border-color: rgba(255, 90, 111, 0.55) !important;
+  background: rgba(255, 90, 111, 0.18) !important;
+}
+
+.main-content {
+  flex: 1;
+  padding-bottom: 18px;
+  animation: pageIn var(--dur-1) var(--ease-out);
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app-footer {
+  background: rgba(0, 0, 0, 0.22);
+  border-top: 1px solid var(--stroke-0);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-1);
+}
+
+.app-footer p {
+  color: var(--text-1);
+  margin: 0;
+}
+
+.footer-title {
+  font-family: var(--font-display);
+  color: var(--text-0);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.footer-icon {
+  color: var(--brand-0);
+}
+
+.footer-link {
+  color: var(--text-0);
+  opacity: 0.9;
+}
+
+.footer-link:hover {
+  color: var(--brand-0);
+  opacity: 1;
+}
+
+.footer-divider {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.landing-hero {
+  min-height: 78vh;
+  padding: 18px 0;
+}
+
+.landing-logo {
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.35));
+}
+
+.landing-cta {
+  box-shadow: 0 18px 40px rgba(255, 191, 0, 0.18);
+}
+
+.landing-cta:hover {
+  filter: brightness(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
 }

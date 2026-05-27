@@ -1,141 +1,119 @@
-/* Stili globali ispirati al progetto fantacalcio */
-
-/* Colori principali */
-:root {
-  --primary-color: #007bff;
-  --secondary-color: #6c757d;
-  --success-color: #28a745;
-  --danger-color: #dc3545;
-  --warning-color: #ffc107;
-  --info-color: #17a2b8;
-  --light-color: #f8f9fa;
-  --dark-color: #343a40;
-}
-
-/* Stili generali */
 body {
-  font-family: 'Roboto', 'Segoe UI', sans-serif;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
-/* Card styling - remove or reduce box-shadow */
+.container, .container-fluid {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
 .card {
-  border: none;
-  border-radius: 10px;
-  box-shadow: none; /* Remove box shadow completely */
-  transition: transform 0.2s;
-  overflow: hidden;
+  background: var(--surface-0);
+  border: 1px solid var(--stroke-0);
+  border-radius: var(--radius-1);
+  color: var(--text-0);
+  box-shadow: none;
+  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Keep shadow only on hover for interaction feedback */
+  transform: translateY(-2px);
+  border-color: var(--stroke-1);
+  box-shadow: var(--shadow-1);
 }
 
-/* Container styling - remove box-shadow */
-.container, .container-fluid {
-  box-shadow: none;
-}
-
-/* List group styling - remove box-shadow */
 .list-group {
-  border-radius: 10px;
+  border-radius: var(--radius-1);
   overflow: hidden;
-  box-shadow: none;
-}
-
-/* Table styling - remove box-shadow */
-.table {
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: none;
-}
-
-/* Alert styling - remove box-shadow */
-.alert {
-  border-radius: 8px;
-  border: none;
-  box-shadow: none;
-}
-
-/* Badge styling */
-.badge {
-  padding: 6px 10px;
-  font-weight: 500;
-  border-radius: 6px;
-}
-
-/* Navbar styling */
-.navbar {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-brand {
-  font-weight: 600;
-}
-
-/* List group styling */
-.list-group {
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--stroke-0);
 }
 
 .list-group-item {
-  border-left: none;
-  border-right: none;
-  padding: 12px 15px;
-  transition: background-color 0.2s;
+  background: transparent;
+  color: var(--text-0);
+  border-color: var(--stroke-0);
+  padding: 12px 14px;
 }
 
-.list-group-item:first-child {
-  border-top: none;
+.table {
+  color: var(--text-0);
 }
 
-.list-group-item:last-child {
-  border-bottom: none;
+.table > :not(caption) > * > * {
+  background: var(--surface-0);
+  border-color: var(--stroke-0);
 }
 
-
-/* Aggiungiamo stili responsive per migliorare la visualizzazione mobile */
-@media (max-width: 768px) {
-  .container, .container-fluid {
-    max-width: 98%; /* Questo è il parametro principale da modificare per la larghezza */
-    padding-left: 8px;
-    padding-right: 8px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .row {
-    margin-left: -5px;
-    margin-right: -5px;
-  }
-  
-  .col, [class*="col-"] {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-  
-  .card {
-    margin-bottom: 12px;
-  }
-  
-  .card-body {
-    padding: 15px;
-  }
-  
-  /* Ridurre il padding per elementi interni */
-  .list-group-item {
-    padding: 10px 12px;
-  }
+.alert {
+  border-radius: var(--radius-0);
+  border: 1px solid var(--stroke-0);
+  background: var(--surface-0);
+  color: var(--text-0);
 }
 
-/* Ottimizzazione per schermi molto piccoli */
+.badge {
+  padding: 6px 10px;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--stroke-0);
+  color: var(--text-0);
+  border-radius: 12px;
+}
+
+.input-group-text {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group > .form-control {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-label {
+  color: var(--text-1);
+  font-weight: 600;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: rgba(255, 191, 0, 0.45);
+  box-shadow: var(--ring-0);
+  color: var(--text-0);
+}
+
+.btn {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: transform var(--dur-0) var(--ease-out), box-shadow var(--dur-0) var(--ease-out), filter var(--dur-0) var(--ease-out);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-warning {
+  box-shadow: 0 10px 22px rgba(255, 191, 0, 0.18);
+}
+
+.btn-warning:hover {
+  filter: brightness(1.03);
+}
+
 @media (max-width: 576px) {
   .container, .container-fluid {
-    max-width: 99%; /* Aumentiamo ulteriormente la larghezza per schermi molto piccoli */
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 14px;
+    padding-right: 14px;
   }
 }
