@@ -648,3 +648,72 @@
     height: 20px;
   }
 }
+
+.finance-chart {
+  display: block;
+}
+
+.finance-holder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.finance-holder-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.finance-holder-name {
+  color: var(--text-0);
+  font-weight: 700;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.finance-holder-value {
+  color: var(--text-0);
+  font-variant-numeric: tabular-nums;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.finance-kind {
+  font-weight: 700;
+}
+
+.finance-details {
+  min-width: 0;
+}
+
+.finance-title {
+  font-weight: 700;
+  color: var(--text-0);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 320px;
+}
+
+.finance-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 360px;
+}
+
+.finance-delete {
+  border-radius: 12px;
+}
+
+.finance-table th,
+.finance-table td {
+  vertical-align: middle;
+}

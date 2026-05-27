@@ -26,6 +26,7 @@ import AdminBonus from './pages/admin/AdminBonus';
 import Landing from './pages/Landing';
 import CalendarResults from './pages/CalendarResults'; // Nuova importazione
 import AdminResults from './pages/admin/AdminResults';
+import AdminFinance from './pages/admin/AdminFinance';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -162,6 +163,11 @@ function App() {
             <Route path="/admin/users" element={
               <ProtectedRoute adminOnly={true}>
                 <AdminUsers />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/finance" element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminFinance />
               </ProtectedRoute>
             } />
             <Route path="/admin/teams" element={

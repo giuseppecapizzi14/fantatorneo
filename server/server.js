@@ -55,6 +55,8 @@ app.use('/api/bonus', require('./routes/bonus'));
 app.use('/api/leaderboard', require('./routes/leaderboard'));
 // Calendar routes
 app.use('/api/calendar', require('./routes/calendar'));
+// Finance routes
+app.use('/api/finance', require('./routes/finance'));
 
 // Try to start the server with error handling for port conflicts
 const startServer = (port) => {

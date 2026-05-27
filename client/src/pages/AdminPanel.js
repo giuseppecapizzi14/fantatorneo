@@ -1,11 +1,17 @@
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FaUsers, FaTrophy, FaStar, FaClipboardList } from 'react-icons/fa';
+import { FaUsers, FaTrophy, FaStar, FaClipboardList, FaMoneyBillWave } from 'react-icons/fa';
 
 const AdminPanel = () => {
   // Array of admin options
   const adminOptions = [
+    {
+      title: 'Gestione Spese',
+      path: '/admin/finance',
+      icon: <FaMoneyBillWave size={40} />,
+      description: 'Gestisci entrate, spese e saldo'
+    },
     {
       title: 'Gestione Utenti',
       path: '/admin/users',

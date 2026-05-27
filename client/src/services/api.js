@@ -78,6 +78,22 @@ export const deleteUser = (id) => {
   return api.delete(`/users/${id}`);
 };
 
+export const getFinanceSummary = () => {
+  return api.get('/finance/summary');
+};
+
+export const getFinanceTransactions = (limit = 300) => {
+  return api.get(`/finance/transactions?limit=${limit}`);
+};
+
+export const createFinanceTransaction = (data) => {
+  return api.post('/finance/transactions', data);
+};
+
+export const deleteFinanceTransaction = (id) => {
+  return api.delete(`/finance/transactions/${id}`);
+};
+
 // Team services
 export const getTeams = async () => {
   try {
