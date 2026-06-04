@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 const defaultCorsOrigins = process.env.NODE_ENV === 'production'
-  ? ['https://fantamazzarinosummercup.fun']
+  ? ['https://fantamazzarinosummercup.netlify.app']
   : ['http://localhost:3000'];
 
 const corsOrigins = (process.env.CORS_ORIGINS || '')
